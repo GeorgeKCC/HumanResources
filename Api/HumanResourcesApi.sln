@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HumanResourcesApi", "HumanResourcesApi.csproj", "{C49E1C37-728C-4D23-BCDA-50484DB6FCB4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColaboratorModule", "..\ColaboratorModule\ColaboratorModule.csproj", "{76F80EA4-C8F1-479E-901C-27557809E734}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +19,16 @@ Global
 		{C49E1C37-728C-4D23-BCDA-50484DB6FCB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C49E1C37-728C-4D23-BCDA-50484DB6FCB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C49E1C37-728C-4D23-BCDA-50484DB6FCB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76F80EA4-C8F1-479E-901C-27557809E734}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76F80EA4-C8F1-479E-901C-27557809E734}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76F80EA4-C8F1-479E-901C-27557809E734}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76F80EA4-C8F1-479E-901C-27557809E734}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{76F80EA4-C8F1-479E-901C-27557809E734} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {98F5F744-353C-4E89-9D8A-B5A5CDA9C6B8}
