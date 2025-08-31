@@ -9,7 +9,7 @@ on:
         default: patch
 
   workflow_run:
-    workflows: ["Build"]   # Debe coincidir con el name: del build.yml
+    workflows: ["Build .NET App"]   # Debe coincidir con el name: del build.yml
     types:
       - completed
 
