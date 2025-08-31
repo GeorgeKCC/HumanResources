@@ -1,0 +1,97 @@
+name: Manual Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Tipo de release (major | minor | patch)'
+        required: true
+        default: patch
+
+  workflow_run:
+    workflows: ["Build"]   # Debe coincidir con el name: del build.yml
+    types:
+      - completed
+
+jobs:
+  release:
+    # Solo corre si viene de workflow_run con éxito
+    if: |
+      (github.event_name == 'workflow_dispatch') || 
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) Descargar el repo
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # importante para acceder a todo el historial de commits
+
+      # 2) Obtener último tag (si no hay, arranca en v0.0.0)
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          latest=$(git describe --tags --abbrev=0 || echo "v0.0.0")
+          echo "latest=$latest" >> $GITHUB_ENV
+
+      # 3) Calcular nueva versión según input (solo si viene de dispatch)
+      - name: Bump version
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        id: bump
+        run: |
+          latest="${{ env.latest }}"
+          version=${latest#v}
+          major=$(echo $version | cut -d. -f1)
+          minor=$(echo $version | cut -d. -f2)
+          patch=$(echo $version | cut -d. -f3)
+
+          case "${{ github.event.inputs.bump }}" in
+            major) major=$((major+1)); minor=0; patch=0 ;;
+            minor) minor=$((minor+1)); patch=0 ;;
+            patch) patch=$((patch+1)) ;;
+          esac
+
+          new_version="v$major.$minor.$patch"
+          echo "new_version=$new_version" >> $GITHUB_ENV
+          echo "New version: $new_version"
+
+      # 4) Generar changelog
+      - name: Generate changelog
+        run: |
+          echo "## ${{ env.new_version }} ($(date +%Y-%m-%d))" > tmp_changelog.md
+          git log ${{ env.latest }}..HEAD --pretty=format:"- %s" >> tmp_changelog.md
+          echo "" >> tmp_changelog.md
+          cat CHANGELOG.md >> tmp_changelog.md || true
+          mv tmp_changelog.md CHANGELOG.md
+
+      # 5) Commit changelog
+      - name: Commit changelog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md
+          git commit -m "docs(changelog): update for ${{ env.new_version }}"
+          git push origin HEAD:${GITHUB_REF#refs/heads/}
+
+      # 6) Setup .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      # 7) Publicar
+      - name: Publish
+        run: dotnet publish -c Release -o out
+
+      # 8) Crear release en GitHub
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.new_version }}
+          name: Release ${{ env.new_version }}
+          body_path: CHANGELOG.md
+          draft: false
+          prerelease: false
+          files: |
+            out/**
