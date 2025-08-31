@@ -22,7 +22,7 @@ jobs:
         run: dotnet restore Api/HumanResourcesApi.sln
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build Api/HumanResourcesApi.sln --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test Api/HumanResourcesApi.sln --no-build --verbosity normal
