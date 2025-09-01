@@ -28,15 +28,10 @@ jobs:
         id: get_tag
         run: |
           git fetch --tags
-
-          # Tomar el último tag válido en orden semántico
           latest_tag=$(git tag --sort=-v:refname | head -n 1)
-
-          # Si no hay tags, arrancar desde v0.0.0
           if [ -z "$latest_tag" ]; then
             latest_tag="v0.0.0"
           fi
-
           echo "latest_tag=$latest_tag" >> $GITHUB_ENV
           echo "Último tag encontrado: $latest_tag"
 
@@ -67,10 +62,29 @@ jobs:
           echo "new_version=$new_version" >> $GITHUB_ENV
           echo "Nueva versión generada: $new_version"
 
+      # 🔹 Ejemplo con .NET (ajústalo según tu proyecto)
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Build and publish
+        run: |
+          dotnet restore
+          dotnet publish -c Release -o publish
+
+      # 🔹 Empaquetar en ZIP
+      - name: Package artifacts
+        run: |
+          cd publish
+          zip -r ../release-${{ env.new_version }}.zip .
+
+      # 🔹 Crear release y subir ZIP como asset
       - name: Create Release
         run: |
           gh release create "$new_version" \
             --title "$new_version" \
-            --notes "Release $new_version generado manualmente"
+            --notes "Release $new_version generado manualmente" \
+            "release-${{ env.new_version }}.zip"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
