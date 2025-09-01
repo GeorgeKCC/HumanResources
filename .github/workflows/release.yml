@@ -21,13 +21,24 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # Muy importante para traer todos los tags
 
       - name: Get latest tag
         id: get_tag
         run: |
           git fetch --tags
-          latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+
+          # Tomar el último tag válido en orden semántico
+          latest_tag=$(git tag --sort=-v:refname | head -n 1)
+
+          # Si no hay tags, arrancar desde v0.0.0
+          if [ -z "$latest_tag" ]; then
+            latest_tag="v0.0.0"
+          fi
+
           echo "latest_tag=$latest_tag" >> $GITHUB_ENV
+          echo "Último tag encontrado: $latest_tag"
 
       - name: Bump version
         id: bump
@@ -54,6 +65,7 @@ jobs:
 
           new_version="v$major.$minor.$patch"
           echo "new_version=$new_version" >> $GITHUB_ENV
+          echo "Nueva versión generada: $new_version"
 
       - name: Create Release
         run: |
