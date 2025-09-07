@@ -1,0 +1,69 @@
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Shared.Generics.Response;
+
+namespace Shared.Exception.Handler
+{
+    public class ExceptionHandler(ILogger<ExceptionHandler> logger) : IExceptionHandler
+    {
+        public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, System.Exception exception, CancellationToken cancellationToken)
+        {
+            logger.LogError("Error Message: {exceptionMessage}, Time of occurrence {time}", exception.Message, DateTime.UtcNow);
+            (string Detail, string Title, int StatusCode, string ErrorCode) = exception switch
+            {
+                DbUpdateConcurrencyException => 
+                (
+                    "The information to be updated was affected by another transaction.",
+                    exception.GetType().Name,
+                    httpContext.Response.StatusCode = StatusCodes.Status400BadRequest,
+                    "002"
+                ),
+                NotFoundCustomException =>
+                (
+                    exception.Message,
+                    exception.GetType().Name,
+                    httpContext.Response.StatusCode = StatusCodes.Status404NotFound,
+                    "404"
+                ),
+                ValidationException =>
+                (
+                    exception.Message,
+                    exception.GetType().Name,
+                    httpContext.Response.StatusCode = StatusCodes.Status400BadRequest,
+                    "001"
+                ),
+                _ =>
+                (
+                   exception.Message,
+                   exception.GetType().Name,
+                   httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError,
+                   "500"
+                )
+            };
+
+            var problemDetails = new ProblemDetails
+            {
+                Title = Title,
+                Detail = Detail,
+                Status = StatusCode,
+                Instance = httpContext.Request.Path
+            };
+
+            problemDetails.Extensions.Add("traceId", httpContext.TraceIdentifier);
+
+            if (exception is ValidationException validationException)
+            {
+                problemDetails.Extensions.Add("ValidationErrors", validationException.Errors);
+            }
+
+            var response = new GenericResponseFailed<ProblemDetails>(ErrorCode, Detail, problemDetails);
+
+            await httpContext.Response.WriteAsJsonAsync(response, cancellationToken: cancellationToken);
+            return true;
+        }
+    }
+}
