@@ -13,12 +13,22 @@ namespace Shared
 
         public static IServiceCollection ServicesSharedModule(this IServiceCollection service)
         {
+            service.AddCors(x =>
+            {
+                x.AddPolicy("CorsPolicy", z =>
+                {
+                    z.AllowAnyHeader();
+                    z.AllowAnyMethod();
+                    z.AllowAnyOrigin();
+                });
+            });
             return service;
         }
 
         public static IApplicationBuilder ApplicationSharedModule(this IApplicationBuilder app)
         {
             app.UseExceptionHandler(x => { });
+            app.UseCors("CorsPolicy");
             return app;
         }
     }

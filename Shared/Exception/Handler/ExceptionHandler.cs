@@ -15,13 +15,6 @@ namespace Shared.Exception.Handler
             logger.LogError("Error Message: {exceptionMessage}, Time of occurrence {time}", exception.Message, DateTime.UtcNow);
             (string Detail, string Title, int StatusCode, string ErrorCode) = exception switch
             {
-                DbUpdateConcurrencyException => 
-                (
-                    "The information to be updated was affected by another transaction.",
-                    exception.GetType().Name,
-                    httpContext.Response.StatusCode = StatusCodes.Status400BadRequest,
-                    "002"
-                ),
                 NotFoundCustomException =>
                 (
                     exception.Message,
@@ -35,6 +28,19 @@ namespace Shared.Exception.Handler
                     exception.GetType().Name,
                     httpContext.Response.StatusCode = StatusCodes.Status400BadRequest,
                     "001"
+                ),
+                DbUpdateConcurrencyException =>
+                (
+                    "The information to be updated was affected by another transaction.",
+                    exception.GetType().Name,
+                    httpContext.Response.StatusCode = StatusCodes.Status400BadRequest,
+                    "002"
+                ),
+                ExistColaboratorCustomException => (
+                    exception.Message,
+                    exception.GetType().Name,
+                    httpContext.Response.StatusCode = StatusCodes.Status404NotFound,
+                    "003"
                 ),
                 _ =>
                 (

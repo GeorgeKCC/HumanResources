@@ -30,5 +30,29 @@ namespace ColaboratorModule.mappers
                 DocumentType = colaborator.DocumentType,
             };
         }
+
+        internal static Colaborator Map(this UpdateColaboratorRequest updateColaboratorRequest, Colaborator colaborator)
+        {
+            colaborator.Email = updateColaboratorRequest.Email;
+            colaborator.DocumentNumber = updateColaboratorRequest.DocumentNumber;
+            colaborator.DocumentType = updateColaboratorRequest.DocumentType;
+            colaborator.LastName = updateColaboratorRequest.LastName;
+            colaborator.Name = updateColaboratorRequest.Name;
+
+            return colaborator;
+        }
+
+        internal static IEnumerable<ColaboratorDto> Map(this List<Colaborator> colaborators)
+        {
+            return colaborators.Select(x => new ColaboratorDto()
+            {
+                Id = x.Id,
+                Name = x.Name,
+                LastName= x.LastName,
+                Email = x.Email,
+                DocumentNumber = x.DocumentNumber,
+                DocumentType = x.DocumentType
+            });
+        }
     }
 }

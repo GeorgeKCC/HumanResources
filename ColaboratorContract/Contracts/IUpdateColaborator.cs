@@ -6,6 +6,6 @@ namespace ColaboratorContract.Contracts
 {
     public interface IUpdateColaborator
     {
-        Task<GenericResponse<ColaboratorDto>> UpdateColaboratorAsync(UpdateColaboratorRequest updateColaboratorRequest);
+        Task<GenericResponse<ColaboratorDto>> UpdateColaboratorAsync(UpdateColaboratorRequest updateColaboratorRequest, int id);
     }
 }
