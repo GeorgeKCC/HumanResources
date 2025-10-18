@@ -1,12 +1,4 @@
-﻿using FluentValidation;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Shared.Generics.Response;
-
-namespace Shared.Exception.Handler
+﻿namespace Shared.Exception.Handler
 {
     public class ExceptionHandler(ILogger<ExceptionHandler> logger) : IExceptionHandler
     {
@@ -21,6 +13,13 @@ namespace Shared.Exception.Handler
                     exception.GetType().Name,
                     httpContext.Response.StatusCode = StatusCodes.Status404NotFound,
                     "404"
+                ),
+                UnauthorizedAccessException =>
+                (
+                    "You are not authorized.",
+                    exception.GetType().Name,
+                    httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized,
+                    "401"
                 ),
                 ValidationException =>
                 (

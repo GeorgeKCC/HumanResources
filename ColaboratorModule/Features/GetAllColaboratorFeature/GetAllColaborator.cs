@@ -1,13 +1,13 @@
 ﻿using ColaboratorContract.Contracts;
 using ColaboratorContract.Dtos.Response;
-using ColaboratorModule.Data.Context;
 using ColaboratorModule.mappers;
 using Microsoft.EntityFrameworkCore;
+using Shared.Context;
 using Shared.Generics.Response;
 
 namespace ColaboratorModule.Features.GetAllColaboratorFeature
 {
-    internal class GetAllColaborator(ColaboratorContext colaboratorContext) : IGetAllColaborator
+    internal class GetAllColaborator(DatabaseContext colaboratorContext) : IGetAllColaborator
     {
         public async Task<GenericResponse<IEnumerable<ColaboratorDto>>> GetAllAsync()
         {

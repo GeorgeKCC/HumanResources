@@ -1,13 +1,16 @@
-﻿using Azure;
-using ColaboratorContract.Contracts;
+﻿using ColaboratorContract.Contracts;
 using ColaboratorContract.Dtos.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace HumanResourcesApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ColaboratorController(
+                                        HybridCache hybridCache,
                                         ICreateColaborator createColaborator,
                                         IUpdateColaborator updateColaborator,
                                         IGetAllColaborator getAllColaborator
@@ -16,7 +19,7 @@ namespace HumanResourcesApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateColaboratorRequest createColaboratorRequest)
         {
-            var response = await createColaborator.CreateAsync(createColaboratorRequest);
+            var response =  await createColaborator.CreateAsync(createColaboratorRequest);
             return Ok(response);
         }
 
@@ -30,7 +33,9 @@ namespace HumanResourcesApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var response = await getAllColaborator.GetAllAsync();
+            var response = await hybridCache.GetOrCreateAsync(
+                           "keyColaborator",
+                            async _ => await getAllColaborator.GetAllAsync());
             return Ok(response);
         }
     }

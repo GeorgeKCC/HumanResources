@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Shared.Entities
+﻿namespace Shared.Entities
 {
     [Table("Colaborator")]
     public class Colaborator

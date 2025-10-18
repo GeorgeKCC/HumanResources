@@ -4,7 +4,7 @@
     {
         public string Code { get; } = "200";
         public string Message { get; } = message;
-        public bool IsSucces { get; } = true;
+        public bool IsSuccess { get; } = true;
         public T Data { get; } = data;
     }
 }

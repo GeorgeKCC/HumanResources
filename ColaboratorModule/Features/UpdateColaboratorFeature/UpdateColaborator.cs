@@ -1,17 +1,17 @@
 ﻿using ColaboratorContract.Contracts;
 using ColaboratorContract.Dtos.Request;
 using ColaboratorContract.Dtos.Response;
-using ColaboratorModule.Data.Context;
 using ColaboratorModule.mappers;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Shared.Context;
 using Shared.Exception;
 using Shared.Generics.Response;
 
 namespace ColaboratorModule.Features.UpdateColaboratorFeature
 {
     internal class UpdateColaborator(
-                                     ColaboratorContext colaboratorContext,
+                                     DatabaseContext colaboratorContext,
                                      IValidator<UpdateColaboratorRequest> validator
                                     ) : IUpdateColaborator
     {

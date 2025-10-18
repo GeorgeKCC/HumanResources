@@ -1,20 +1,60 @@
 {
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "ng serve",
-      "type": "chrome",
-      "request": "launch",
-      "preLaunchTask": "npm: start",
-      "url": "http://localhost:4200/"
+      "name": "🚀 Debug SSR Server",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "restart": true,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "${workspaceFolder}",
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/dist/**/*.js",
+        "!**/node_modules/**"
+      ],
+      "sourceMaps": true,
+      "skipFiles": [
+        "<node_internals>/**",
+        "**/node_modules/**"
+      ],
+      "internalConsoleOptions": "neverOpen"
     },
     {
-      "name": "ng test",
+      "name": "🌐 Debug Angular Client (Chrome)",
       "type": "chrome",
       "request": "launch",
-      "preLaunchTask": "npm: test",
-      "url": "http://localhost:9876/debug.html"
+      "url": "http://localhost:4000",
+      "webRoot": "${workspaceFolder}/src",
+      "sourceMapPathOverrides": {
+        "webpack:/*": "${webRoot}/*"
+      }
+    },
+    {
+      "name": "🌐 Debug Angular Client (Edge)",
+      "type": "msedge", 
+      "request": "launch",
+      "url": "http://localhost:4000",
+      "webRoot": "${workspaceFolder}/src",
+      "sourceMapPathOverrides": {
+        "webpack:/*": "${webRoot}/*"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "🔥 Debug Full SSR App (Chrome)",
+      "configurations": [
+        "🚀 Debug SSR Server",
+        "🌐 Debug Angular Client (Chrome)"
+      ]
+    },
+    {
+      "name": "🔥 Debug Full SSR App (Edge)",
+      "configurations": [
+        "🚀 Debug SSR Server", 
+        "🌐 Debug Angular Client (Edge)"
+      ]
     }
   ]
 }
