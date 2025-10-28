@@ -31,9 +31,10 @@
 
         private static void ConfigDatabase(IServiceCollection service, IConfiguration configuration)
         {
-            service.AddDbContext<DatabaseContext>(x =>
+            service.AddDbContextPool<DatabaseContext>(x =>
             {
-                x.UseSqlServer(configuration.GetConnectionString("Database"));
+                x.UseSqlServer(configuration.GetConnectionString("Database"),
+                               z => z.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
             });
         }
 

@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@angular/animations": "^20.3.6",
+    "primeicons": "^7.0.0",
+    "primeng": "^20.2.0",
+    "tailwindcss-primeui": "^0.6.1"
+  }
+}

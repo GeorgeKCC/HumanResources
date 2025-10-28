@@ -11,7 +11,7 @@ namespace ColaboratorModule.Features.GetAllColaboratorFeature
     {
         public async Task<GenericResponse<IEnumerable<ColaboratorDto>>> GetAllAsync()
         {
-            var colaborators = await colaboratorContext.Colaborators.ToListAsync();
+            var colaborators = await colaboratorContext.Colaborators.Include(x => x.Security).ToListAsync();
             var colabortorsMap = colaborators.Map();
             return new GenericResponse<IEnumerable<ColaboratorDto>>("Get all colaborator", colabortorsMap);
         }

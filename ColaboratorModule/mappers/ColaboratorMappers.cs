@@ -51,7 +51,8 @@ namespace ColaboratorModule.mappers
                 LastName= x.LastName,
                 Email = x.Email,
                 DocumentNumber = x.DocumentNumber,
-                DocumentType = x.DocumentType
+                DocumentType = x.DocumentType,
+                IsActive = x.Security != null && x.Security.Active
             });
         }
     }

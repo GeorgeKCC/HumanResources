@@ -8,5 +8,6 @@
         public required string Email { get; set; }
         public required string DocumentType { get; set; }
         public required string DocumentNumber { get; set; }
+        public bool IsActive { get; set; }
     }
 }

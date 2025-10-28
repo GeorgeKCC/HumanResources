@@ -1,0 +1,44 @@
+.login-wrapper {
+  background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
+  padding: 20px;
+}
+
+.login-card {
+  max-width: 900px;
+  width: 100%;
+  background: #fff;
+  border-radius: 20px;
+}
+
+.illustration {
+  flex: 1;
+  background: linear-gradient(135deg, #007bff, #6610f2);
+  color: white;
+}
+
+.form-side {
+  flex: 1;
+  min-width: 300px;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #007bff, #6610f2);
+  border: none;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.text-primary {
+  background: -webkit-linear-gradient(90deg, #007bff, #6610f2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@media (max-width: 767px) {
+  .illustration {
+    display: none;
+  }
+}

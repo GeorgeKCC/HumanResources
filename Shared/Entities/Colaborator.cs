@@ -12,6 +12,8 @@
         public string DocumentNumber { get; set; } = string.Empty;
 
         [Timestamp]
-        public byte[] Version { get; set; } = Array.Empty<byte>();
+        public byte[] Version { get; set; } = [];
+
+        public Security? Security { get; set; }
     }
 }
