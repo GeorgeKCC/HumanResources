@@ -1,0 +1,5 @@
+@if(colaboratorService.isLoading()){
+    <label>Loading...</label>
+}@else{
+    <label>{{ colaboratorService.colaborator()?.name }}</label>
+}

@@ -12,7 +12,7 @@ namespace ColaboratorModule.Features.GetByEmailByColaboratorFeature
     {
         public async Task<GenericResponse<ColaboratorDto>> GetByEmailAsync(string email)
         {
-            var colaborator = await databaseContext.Colaborators.FirstOrDefaultAsync(x => x.Email == email)
+            var colaborator = await databaseContext.Colaborators.AsNoTracking().FirstOrDefaultAsync(x => x.Email == email)
                               ?? throw new ExistColaboratorCustomException("Not exist colaborator");
 
             return new GenericResponse<ColaboratorDto>("Found colaborator", colaborator.Map(colaborator.Id));

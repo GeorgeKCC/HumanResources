@@ -13,6 +13,7 @@ export class ColaboratorService {
   isLoading = signal<boolean>(false);
   data = signal<ColaboratorModel[]>([]);
   hasError = signal<boolean>(false);
+  colaborator = signal<ColaboratorModel | null>(null);
 
   async getColaborators() {
     try {
@@ -21,6 +22,20 @@ export class ColaboratorService {
         this.http.get<GenericModel<ColaboratorModel[]>>(Environment.apiUrl + '/colaborator', { withCredentials: true })
       );
       this.data.set(result.data);
+      this.isLoading.set(false);
+    } catch (error) {
+      this.isLoading.set(false);
+      this.hasError.set(true);
+    }
+  }
+
+  async getColaboratorById(id: number) {
+    try {
+      this.isLoading.set(true);
+      const result = await lastValueFrom(
+        this.http.get<GenericModel<ColaboratorModel>>(Environment.apiUrl + '/colaborator/' + id, { withCredentials: true })
+      );
+      this.colaborator.set(result.data);
       this.isLoading.set(false);
     } catch (error) {
       this.isLoading.set(false);

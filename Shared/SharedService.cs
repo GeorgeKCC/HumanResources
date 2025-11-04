@@ -1,4 +1,6 @@
-﻿namespace Shared
+﻿using Shared.hub;
+
+namespace Shared
 {
     public static class SharedService
     {
@@ -18,7 +20,13 @@
             ConfigHealthChecks(service, configuration);
             ConfigRateLimit(service);
             ConfigServices(service);
+            ConfigSignalR(service);
             return service;
+        }
+
+        private static void ConfigSignalR(IServiceCollection service)
+        {
+            service.AddSignalR();
         }
 
         private static void ConfigServices(IServiceCollection service)
@@ -174,6 +182,12 @@
                 }
             });
             app.UseRateLimiter();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<NotificationHub>("/hub/notifications")
+                         .RequireAuthorization();
+            });
 
             return app;
         }

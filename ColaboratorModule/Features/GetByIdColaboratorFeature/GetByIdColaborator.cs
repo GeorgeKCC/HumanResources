@@ -12,7 +12,7 @@ namespace ColaboratorModule.Features.GetByIdColaboratorFeature
     {
         public async Task<GenericResponse<ColaboratorDto>> GetByIdAsync(int id)
         {
-            var colaborator = await colaboratorContext.Colaborators.FirstOrDefaultAsync(x => x.Id == id)
+            var colaborator = await colaboratorContext.Colaborators.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id)
                               ?? throw new NotFoundCustomException("Not exist colaborator");
 
             return new GenericResponse<ColaboratorDto>("Found colaborator", colaborator.Map(colaborator.Id));

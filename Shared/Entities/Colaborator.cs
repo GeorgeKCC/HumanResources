@@ -1,6 +1,10 @@
 ﻿namespace Shared.Entities
 {
     [Table("Colaborator")]
+    [Index(nameof(Email), IsUnique = true)]
+    [Index(nameof(Id), IsUnique = true)]
+    [Index(nameof(DocumentNumber), IsUnique = true)]
+    [Index(nameof(DocumentNumber), nameof(Email), IsUnique = true)]
     public class Colaborator
     {
         [Key]

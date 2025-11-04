@@ -1,6 +1,8 @@
 ﻿namespace Shared.Entities
 {
     [Table("Security")]
+    [Index(nameof(Email), IsUnique = true)]
+    [Index(nameof(Id), IsUnique = true)]
     public class Security
     {
         [Key]

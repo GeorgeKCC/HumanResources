@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: humanresources-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: humanresources-api
+  template:
+    metadata:
+      labels:
+        app: humanresources-api
+    spec:
+      containers:
+        - name: humanresources-api
+          image: <your-docker-image>:latest # Reemplaza con la imagen publicada
+          ports:
+            - containerPort: 80
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+            # Agrega otras variables de entorno necesarias aquí

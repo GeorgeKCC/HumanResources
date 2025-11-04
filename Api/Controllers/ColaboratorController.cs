@@ -13,13 +13,14 @@ namespace HumanResourcesApi.Controllers
                                         HybridCache hybridCache,
                                         ICreateColaborator createColaborator,
                                         IUpdateColaborator updateColaborator,
-                                        IGetAllColaborator getAllColaborator
+                                        IGetAllColaborator getAllColaborator,
+                                        IGetByIdColaborator getByIdColaborator
                                       ) : ControllerBase
     {
         [HttpPost]
         public async Task<IActionResult> Create(CreateColaboratorRequest createColaboratorRequest)
         {
-            var response =  await createColaborator.CreateAsync(createColaboratorRequest);
+            var response = await createColaborator.CreateAsync(createColaboratorRequest);
             return Ok(response);
         }
 
@@ -36,6 +37,15 @@ namespace HumanResourcesApi.Controllers
             var response = await hybridCache.GetOrCreateAsync(
                            "keyColaborator",
                             async _ => await getAllColaborator.GetAllAsync());
+            return Ok(response);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var response = await hybridCache.GetOrCreateAsync(
+                           $"keyColaborator_{id}",
+                            async _ => await getByIdColaborator.GetByIdAsync(id));
             return Ok(response);
         }
     }
