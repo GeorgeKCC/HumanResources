@@ -10,7 +10,9 @@ namespace HumanResourcesApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginController(ILogin login, IOptions<TokenConfiguration> options) : ControllerBase
+    public class LoginController(ILogin login, 
+                                 IOptions<TokenConfiguration> options,
+                                 ICSRF csrf) : ControllerBase
     {
         [HttpPost]
         public async Task<IActionResult> Login(LoginRequest loginRequest)
@@ -38,6 +40,14 @@ namespace HumanResourcesApi.Controllers
         {
             HttpContext.Response.Cookies.Delete(options.Value.TokenCookieName);
             var response = new GenericResponse<bool>("Logout success", true);
+            return Ok(response);
+        }
+
+        [HttpGet("security/csrf")]
+        [Authorize]
+        public IActionResult CrsfToken()
+        {
+            var response = csrf.GetToken(HttpContext);
             return Ok(response);
         }
     }

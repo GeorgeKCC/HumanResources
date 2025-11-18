@@ -1,6 +1,6 @@
 export interface ToastModel {
     severity: 'success' | 'info' | 'warn' | 'error' | '';
-    summary: 'Success' | 'Info' | 'Warn' | 'Error' | '';
+    summary: string;
     message: string;
     code: number;
 }

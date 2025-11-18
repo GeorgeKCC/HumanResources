@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-using Shared.Securities.Contracts;
-using Shared.Securities.Models;
+﻿using Microsoft.Extensions.Options;
 
 namespace Shared.Securities.Token
 {

@@ -1,7 +1,7 @@
 <div class="container-fluid pt-3">
   <p-toolbar class="mb-6">
     <ng-template #start>
-      <p-button label="New" icon="pi pi-plus" class="mr-2" />
+      <p-button label="New" icon="pi pi-plus" class="mr-2" (click)="create()" />
     </ng-template>
   </p-toolbar>
   <p-table
@@ -10,7 +10,7 @@
     [(selection)]="selectedColaborator"
     dataKey="id"
     [rowHover]="true"
-    [rows]="10"
+    [rows]="50"
     [showCurrentPageReport]="true"
     [rowsPerPageOptions]="[10, 25, 50]"
     [loading]="colaboratorService.isLoading()"
@@ -122,7 +122,25 @@
           {{ colaborator.isActive }}
         </td>
         <td>
-          <p-splitbutton dropdownIcon="pi pi-cog" label="view" (onClick)="view(colaborator)" [model]="getActions(colaborator)" />
+          <div class="dropdown">
+            <button
+              class="btn btn-secondary dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i class="bi bi-gear-wide-connected"></i>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" (click)="view(colaborator)">View</a></li>
+              @if(colaborator.isActive){
+               <li><a class="dropdown-item">Deactivate</a></li>
+              }
+              @else {
+                <li><a class="dropdown-item" (click)="activeAccess(colaborator)">Activate</a></li>
+              }
+            </ul>
+          </div>
         </td>
       </tr>
     </ng-template>
@@ -133,3 +151,4 @@
     </ng-template>
   </p-table>
 </div>
+<app-colaborator-create [(visible)]="visible"></app-colaborator-create>

@@ -5,6 +5,7 @@ import { Environment } from '../../../environment/environment.dev';
 import { lastValueFrom } from 'rxjs';
 import { ToastService } from '../../../shared/services/toast.service';
 import { Router } from '@angular/router';
+import { SignalrService } from '../../../shared/services/signalr.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,8 @@ export class LoginService {
   http = inject(HttpClient);
   toastService = inject(ToastService);
   router = inject(Router);
+  signalrService = inject(SignalrService);
+
   isLoggedIn = signal<boolean>(false);
   isLoading = signal<boolean>(false);
 
@@ -22,6 +25,7 @@ export class LoginService {
       await lastValueFrom(
         this.http.post(Environment.apiUrl + '/login', loginModel, { withCredentials: true })
       );
+      this.signalrService.createHubConnection();
       this.isLoggedIn.set(true);
       this.isLoading.set(false);
       this.router.navigate(['/']);
@@ -65,5 +69,29 @@ export class LoginService {
 
   checkLoginStatus() {
     return this.isLoggedIn;
+  }
+
+  async logOut(){
+    try{
+      this.isLoading.set(true);
+      await lastValueFrom(
+        this.http.post<boolean>(
+          Environment.apiUrl + '/login/logout',
+          {},
+          { withCredentials: true }
+        ));
+      this.isLoggedIn.set(false);
+      this.isLoading.set(false);
+      this.signalrService.stopHubConnection();
+      this.router.navigate(['/login']);
+    }
+    catch(error){
+      console.error('Error status code:', error);
+    }
+  }
+
+  async getTokeCsrf() : Promise<string>{
+   var response = await lastValueFrom(this.http.get<{requestToken: string}>(Environment.apiUrl + '/login/security/csrf', { withCredentials: true }));
+   return response.requestToken; 
   }
 }

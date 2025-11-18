@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ColaboratorService } from '../services/colaborator.service';
 
 @Component({
-  selector: 'app-detail',
+  selector: 'app-colaborator-detail',
   templateUrl: './detail.html',
 })
 export class Detail implements OnInit {

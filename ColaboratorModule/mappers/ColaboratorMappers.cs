@@ -20,15 +20,8 @@ namespace ColaboratorModule.mappers
 
         internal static ColaboratorDto Map(this Colaborator colaborator, int id)
         {
-            return new ColaboratorDto()
-            {
-                Id = id,
-                Name = colaborator.Name,
-                LastName = colaborator.LastName,
-                Email = colaborator.Email,
-                DocumentNumber = colaborator.DocumentNumber,
-                DocumentType = colaborator.DocumentType,
-            };
+            return new ColaboratorDto(id, colaborator.Name,colaborator.LastName, colaborator.Email,
+                                      colaborator.DocumentNumber, colaborator.DocumentType, colaborator.Security?.Active ?? false);
         }
 
         internal static Colaborator Map(this UpdateColaboratorRequest updateColaboratorRequest, Colaborator colaborator)
@@ -44,16 +37,9 @@ namespace ColaboratorModule.mappers
 
         internal static IEnumerable<ColaboratorDto> Map(this List<Colaborator> colaborators)
         {
-            return colaborators.Select(x => new ColaboratorDto()
-            {
-                Id = x.Id,
-                Name = x.Name,
-                LastName= x.LastName,
-                Email = x.Email,
-                DocumentNumber = x.DocumentNumber,
-                DocumentType = x.DocumentType,
-                IsActive = x.Security != null && x.Security.Active
-            });
+            return colaborators.Select(x => new ColaboratorDto(x.Id, x.Name, x.LastName, x.Email,
+                                                              x.DocumentNumber, x.DocumentType,
+                                                              x.Security?.Active ?? false));
         }
     }
 }

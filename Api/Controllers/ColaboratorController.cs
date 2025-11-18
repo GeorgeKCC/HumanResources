@@ -1,5 +1,6 @@
 ﻿using ColaboratorContract.Contracts;
 using ColaboratorContract.Dtos.Request;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Hybrid;
@@ -18,15 +19,20 @@ namespace HumanResourcesApi.Controllers
                                       ) : ControllerBase
     {
         [HttpPost]
-        public async Task<IActionResult> Create(CreateColaboratorRequest createColaboratorRequest)
+        public async Task<IActionResult> Create(CreateColaboratorRequest createColaboratorRequest,
+                                                [FromServices] IAntiforgery antiforgery)
         {
+            await antiforgery.ValidateRequestAsync(HttpContext);
             var response = await createColaborator.CreateAsync(createColaboratorRequest);
             return Ok(response);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(UpdateColaboratorRequest updateColaboratorRequest, int id)
+        public async Task<IActionResult> Update(UpdateColaboratorRequest updateColaboratorRequest,
+                                                int id,
+                                                [FromServices] IAntiforgery antiforgery)
         {
+            await antiforgery.ValidateRequestAsync(HttpContext);
             var response = await updateColaborator.UpdateColaboratorAsync(updateColaboratorRequest, id);
             return Ok(response);
         }
@@ -34,9 +40,7 @@ namespace HumanResourcesApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var response = await hybridCache.GetOrCreateAsync(
-                           "keyColaborator",
-                            async _ => await getAllColaborator.GetAllAsync());
+            var response = await getAllColaborator.GetAllAsync();
             return Ok(response);
         }
 

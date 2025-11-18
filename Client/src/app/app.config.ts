@@ -14,8 +14,9 @@ import Aura from '@primeuix/themes/aura';
 import { MessageService } from 'primeng/api';
 import { provideLottieOptions } from 'ngx-lottie';
 import player from 'lottie-web';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors, withXsrfConfiguration } from '@angular/common/http';
 import { LoginService } from './pages/auth/services/login.service';
+import { xsrfInterceptor } from './shared/interceptors/xsrf.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -28,7 +29,12 @@ export const appConfig: ApplicationConfig = {
     provideLottieOptions({
       player: () => player,
     }),
-    provideHttpClient(withFetch()),
+    provideHttpClient(
+      withFetch()
+      // withInterceptors([
+      //   xsrfInterceptor 
+      // ])
+    ),
     MessageService,
     provideAppInitializer(() => {
         const authService = inject(LoginService);

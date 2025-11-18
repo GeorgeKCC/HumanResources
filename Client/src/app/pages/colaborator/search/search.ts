@@ -11,12 +11,13 @@ import { ColaboratorModel } from '../models/colaborator.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ToolbarModule } from 'primeng/toolbar';
-import { SplitButton } from 'primeng/splitbutton';
-import { MenuItem } from 'primeng/api';
 import { Router } from '@angular/router';
+import { Create } from "../create/create";
+import { ManagementService } from '../../../shared/services/management.service';
+import { ManagementActiveAccessModel } from '../../../shared/models/management-model/management-active-access.model';
 
 @Component({
-  selector: 'app-search',
+  selector: 'app-colaborator-search',
   imports: [
     CommonModule,
     FormsModule,
@@ -28,8 +29,8 @@ import { Router } from '@angular/router';
     SelectModule,
     TagModule,
     ToolbarModule,
-    SplitButton,
-  ],
+    Create
+],
   templateUrl: './search.html',
 })
 export class Search implements OnInit {
@@ -37,6 +38,9 @@ export class Search implements OnInit {
 
   colaboratorService = inject(ColaboratorService);
   router = inject(Router);
+  managementService = inject(ManagementService);
+
+  visible = false;
 
   ngOnInit(): void {
     this.colaboratorService.getColaborators();
@@ -50,21 +54,14 @@ export class Search implements OnInit {
     this.router.navigate(['/colaborator', colaborator.id]);
   }
 
-  getActions(colaborator: ColaboratorModel) {
-    let items: MenuItem[] | undefined = [];
+  create(){
+    this.visible = true;
+  }
 
-    if (colaborator.isActive) {
-      items.push({
-        label: 'Deactivate',
-        icon: 'pi pi-ban',
-      });
-    } else {
-      items.push({
-        label: 'Activate',
-        icon: 'pi pi-check',
-      });
-    }
-
-    return items;
+  async activeAccess(colaborator: ColaboratorModel){
+   const activeAccess: ManagementActiveAccessModel = {
+      colaboratorId: colaborator.id,
+   };
+   await this.managementService.activeAccess(activeAccess);
   }
 }

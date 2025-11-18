@@ -1,6 +1,4 @@
-﻿using Shared.hub;
-
-namespace Shared
+﻿namespace Shared
 {
     public static class SharedService
     {
@@ -8,7 +6,6 @@ namespace Shared
         {
             MapperConfiguration(webApplicationBuilder);
             webApplicationBuilder.Services.AddExceptionHandler<ExceptionHandler>();
-
         }
 
         public static IServiceCollection ServicesSharedModule(this IServiceCollection service, IConfiguration configuration)
@@ -16,12 +13,47 @@ namespace Shared
             ConfigDatabase(service, configuration);
             ConfigHybridCache(service, configuration);
             ConfigCors(service, configuration);
+            ConfigAddAntiforgery(service);
             ConfigAuthentication(service, configuration);
             ConfigHealthChecks(service, configuration);
             ConfigRateLimit(service);
             ConfigServices(service);
             ConfigSignalR(service);
+            ConfigDataProtection(service);
             return service;
+        }
+
+        public static IApplicationBuilder ApplicationSharedModule(this IApplicationBuilder app)
+        {
+            app.UseCors("CorsPolicy");
+            app.UseAntiforgery();
+            app.UseMiddleware<CorrelationMiddleware>();
+            app.UseExceptionHandler(x => { });
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseHealthChecks("/health", new HealthCheckOptions()
+            {
+                Predicate = _ => true,
+                ResponseWriter = async (context, report) =>
+                {
+                    context.Response.ContentType = "application/json";
+                    var response = new
+                    {
+                        status = report.Status.ToString(),
+                        checks = report.Entries.Select(entry => new
+                        {
+                            name = entry.Key,
+                            status = entry.Value.Status.ToString(),
+                            exception = entry.Value.Exception?.Message,
+                            duration = entry.Value.Duration.ToString()
+                        })
+                    };
+                    await context.Response.WriteAsJsonAsync(response);
+                }
+            });
+            app.UseRateLimiter();
+
+            return app;
         }
 
         private static void ConfigSignalR(IServiceCollection service)
@@ -146,52 +178,6 @@ namespace Shared
             });
         }
 
-        public static IApplicationBuilder ApplicationSharedModule(this IApplicationBuilder app)
-        {
-            app.UseExceptionHandler(x => { });
-            app.UseCors("CorsPolicy");
-            app.UseAuthentication();
-            app.Use(async (context, next) =>
-            {
-                var correlationId = context.Request.Headers["X-Correlation-Id"].FirstOrDefault()
-                                    ?? Guid.NewGuid().ToString("N");
-                context.Response.Headers["X-Correlation-Id"] = correlationId;
-                using (Serilog.Context.LogContext.PushProperty("CorrelationId", correlationId))
-                {
-                    await next();
-                }
-            });
-            app.UseHealthChecks("/health", new HealthCheckOptions()
-            {
-                Predicate = _ => true,
-                ResponseWriter = async (context, report) =>
-                {
-                    context.Response.ContentType = "application/json";
-                    var response = new
-                    {
-                        status = report.Status.ToString(),
-                        checks = report.Entries.Select(entry => new
-                        {
-                            name = entry.Key,
-                            status = entry.Value.Status.ToString(),
-                            exception = entry.Value.Exception?.Message,
-                            duration = entry.Value.Duration.ToString()
-                        })
-                    };
-                    await context.Response.WriteAsJsonAsync(response);
-                }
-            });
-            app.UseRateLimiter();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapHub<NotificationHub>("/hub/notifications")
-                         .RequireAuthorization();
-            });
-
-            return app;
-        }
-
         static void MapperConfiguration(WebApplicationBuilder builder)
         {
             builder.Services.Configure<TokenConfiguration>(builder.Configuration.GetSection("Token"));
@@ -201,8 +187,25 @@ namespace Shared
         static TokenConfiguration GetConfigurationToken(IConfiguration configuration)
         {
             var token = configuration.GetSection("Token").Get<TokenConfiguration>();
-
             return token ?? throw new TokenConfigurationException("Token Configuration AppSetting is missing.");
+        }
+
+        private static void ConfigAddAntiforgery(IServiceCollection service)
+        {
+            service.AddAntiforgery(options =>
+            {
+                options.Cookie.Name = CSRF_Constant.KEY;
+                options.Cookie.HttpOnly = false;
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.HeaderName = CSRF_Constant.KEY;
+            });
+        }
+
+        private static void ConfigDataProtection(IServiceCollection service)
+        {
+            service.AddDataProtection()
+                   .PersistKeysToFileSystem(new DirectoryInfo("/dataprotection-keys"));
         }
     }
 }

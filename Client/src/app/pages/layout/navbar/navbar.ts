@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from "@angular/router";
+import { Component, inject } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { LoginService } from '../../auth/services/login.service';
 
 @Component({
   selector: 'app-navbar',
@@ -7,5 +8,9 @@ import { RouterLink, RouterLinkActive } from "@angular/router";
   templateUrl: './navbar.html',
 })
 export class Navbar {
+  loginService = inject(LoginService);
 
+  logOut(){
+    this.loginService.logOut();
+  }
 }
