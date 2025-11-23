@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Shared.Generics.Response;
+using Shared.Securities.Constants;
 using Shared.Securities.Models;
 
 namespace HumanResourcesApi.Controllers
@@ -39,6 +40,7 @@ namespace HumanResourcesApi.Controllers
         public IActionResult LogOut()
         {
             HttpContext.Response.Cookies.Delete(options.Value.TokenCookieName);
+            HttpContext.Response.Cookies.Delete(CSRF_Constant.KEY);
             var response = new GenericResponse<bool>("Logout success", true);
             return Ok(response);
         }

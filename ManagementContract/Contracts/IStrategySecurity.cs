@@ -3,8 +3,10 @@ using Shared.Generics.Response;
 
 namespace ManagementContract.Contracts
 {
-    public interface ICreateSecurity
+    public interface IStrategySecurity
     {
+        string OperationType { get; }
+
         Task<GenericResponse<bool>> CreateAsync(SecurityRequest securityRequest);
     }
 }

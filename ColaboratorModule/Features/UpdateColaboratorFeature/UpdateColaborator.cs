@@ -1,6 +1,7 @@
 ﻿using ColaboratorContract.Contracts;
 using ColaboratorContract.Dtos.Request;
 using ColaboratorContract.Dtos.Response;
+using ColaboratorContract.Constants;
 using ColaboratorModule.mappers;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -14,21 +15,26 @@ namespace ColaboratorModule.Features.UpdateColaboratorFeature
     internal class UpdateColaborator(
                                      DatabaseContext colaboratorContext,
                                      IValidator<UpdateColaboratorRequest> validator,
+                                     IColaboratorNotificationHub colaboratorNotificationHub,
                                      IColaboratorRedis colaboratorRedis
                                     ) : IUpdateColaborator
     {
         public async Task<GenericResponse<ColaboratorDto>> UpdateColaboratorAsync(UpdateColaboratorRequest updateColaboratorRequest, int id)
         {
+            await NotificationSteps(1);
+
             await ValidateRequest(updateColaboratorRequest);
 
             var colaborator = await colaboratorContext.Colaborators
                                     .FirstOrDefaultAsync(x => x.Id == id)
                                     ?? throw new NotFoundCustomException("Not found colaborator");
 
-            if(IsIdempotent(updateColaboratorRequest, colaborator))
+            if (IsIdempotent(updateColaboratorRequest, colaborator))
             {
                 return new GenericResponse<ColaboratorDto>("No changes detected", colaborator.Map(colaborator.Id));
             }
+
+            await NotificationSteps(2);
 
             var colaboratorMap = updateColaboratorRequest.Map(colaborator);
 
@@ -37,7 +43,35 @@ namespace ColaboratorModule.Features.UpdateColaboratorFeature
 
             await colaboratorRedis.RemoveById(colaborator.Id);
 
-            return new GenericResponse<ColaboratorDto>("Update colaborator success", colaboratorMap.Map(colaborator.Id));
+            await colaboratorRedis.RemoveListAll();
+
+            var colaboratorDto = colaboratorMap.Map(colaborator.Id);
+
+            await colaboratorNotificationHub.NotificationCreateColaborator(colaboratorDto);
+
+            await NotificationSteps(3);
+
+            return new GenericResponse<ColaboratorDto>("Update colaborator success", colaboratorDto);
+        }
+
+        private async Task NotificationSteps(int step)
+        {
+            switch (step)
+            {
+                case 1:
+                    await colaboratorNotificationHub.NotificationStatusUpdateColaborator(UpdateStatusConstants.Initial);
+                    await colaboratorNotificationHub.NotificationStatusUpdateColaborator(UpdateStatusConstants.Validating);
+                    break;
+                case 2:
+                    await colaboratorNotificationHub.NotificationStatusUpdateColaborator(UpdateStatusConstants.Updating);
+                    break;
+                case 3:
+                    await colaboratorNotificationHub.NotificationStatusUpdateColaborator(UpdateStatusConstants.Finish);
+                    break;
+                default:
+                    break;
+
+            }
         }
 
         private static bool IsIdempotent(UpdateColaboratorRequest updateColaboratorRequest, Colaborator colaborator)

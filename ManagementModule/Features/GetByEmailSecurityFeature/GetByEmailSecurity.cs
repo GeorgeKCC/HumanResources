@@ -10,7 +10,7 @@ namespace ManagementModule.Features.GetByEmailSecurityFeature
     {
         public async Task<Security> GetByEmailAsync(string email)
         {
-           var security = await databaseContext.Securities.FirstOrDefaultAsync(x => x.Email == email)
+           var security = await databaseContext.Securities.AsNoTracking().FirstOrDefaultAsync(x => x.Email == email)
                           ?? throw new ExistColaboratorCustomException("Not exist colaborator");
 
            return security;

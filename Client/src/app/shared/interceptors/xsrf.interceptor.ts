@@ -2,53 +2,43 @@ import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { LoginService } from '../../pages/auth/services/login.service';
+import { from, switchMap, catchError } from 'rxjs';
 
 export const xsrfInterceptor: HttpInterceptorFn = (req, next) => {
   const document = inject(DOCUMENT);
   const loginService = inject(LoginService);
-  
-  const cookieName = 'X-XSRF-TOKEN';
+
   const headerName = 'X-XSRF-TOKEN';
-  
+
   const methodsToApply = ['POST', 'PUT', 'PATCH', 'DELETE'];
   if (!methodsToApply.includes(req.method)) {
-    return next(req);
-  }
-
-  const xsrfValue = getCookieValue(document.cookie, cookieName);
-  
-  if (xsrfValue && !req.headers.has(headerName)) {
-    const clonedReq = req.clone({
-      headers: req.headers.set(headerName, xsrfValue),
+    const clonedGet = req.clone({
+      withCredentials: true,
     });
-    return next(clonedReq);
+    return next(clonedGet);
   }
 
-  return next(req);
-};
-
-function getCookieValue(cookieString: string, name: string): string | null {
-  if (!cookieString || cookieString.trim() === '') {
-    return null;
+  if (!loginService.isLoggedIn()) {
+    const clonedLogin = req.clone({
+      withCredentials: true,
+    });
+    return next(clonedLogin);
   }
 
-  const nameEQ = name + '=';
-  const ca = cookieString.split(';');
-  
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i].trimStart();
-    
-    if (c.startsWith(nameEQ)) {
-      const value = c.substring(nameEQ.length, c.length);
-      
-      // Decodificar el valor si está URL encoded
-      try {
-        return decodeURIComponent(value);
-      } catch (e) {
-        return value;
+  return from(loginService.getTokenCsrf()).pipe(
+    switchMap((xsrfValue) => {
+      if (xsrfValue && !req.headers.has(headerName)) {
+        const clonedReq = req.clone({
+          withCredentials: true,
+          headers: req.headers.set(headerName, xsrfValue),
+        });
+        return next(clonedReq);
       }
-    }
-  }
-  
-  return null;
-}
+      return next(req);
+    }),
+    catchError((error) => {
+      console.error('Error retrieving CSRF token:', error);
+      return next(req);
+    })
+  );
+};

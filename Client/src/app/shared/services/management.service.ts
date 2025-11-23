@@ -13,8 +13,15 @@ export class ManagementService {
    async activeAccess(managementActiveAccessModel: ManagementActiveAccessModel): Promise<boolean> {
     const result = await lastValueFrom(this.http.post<boolean>(
       Environment.apiUrl + '/management',
-      managementActiveAccessModel,
-      { withCredentials: true }
+      managementActiveAccessModel
+    ));
+    return result;
+  }
+
+  async deactivateAccess(managementActiveAccessModel: ManagementActiveAccessModel): Promise<boolean> {
+    const result = await lastValueFrom(this.http.post<boolean>(
+      Environment.apiUrl + '/management/Deactivated',
+      managementActiveAccessModel
     ));
     return result;
   }

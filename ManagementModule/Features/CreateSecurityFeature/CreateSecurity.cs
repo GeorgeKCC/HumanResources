@@ -2,14 +2,12 @@
 using ColaboratorContract.Dtos.Response;
 using ManagementContract.Contracts;
 using ManagementContract.Dtos.Request;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Caching.Hybrid;
+using ManagementContract.Enums;
+using Microsoft.EntityFrameworkCore;
 using Shared.Context;
 using Shared.Entities;
 using Shared.Generics.Response;
-using Shared.hub;
 using Shared.Securities.Contracts;
-using Shared.Securities.Models;
 
 namespace ManagementModule.Features.CreateSecurityFeature
 {
@@ -19,8 +17,10 @@ namespace ManagementModule.Features.CreateSecurityFeature
                                   IPasswordHashWithSalt passwordHashWithSalt,
                                   IColaboratorNotificationHub colaboratorNotificationHub,
                                   IColaboratorRedis colaboratorRedis
-                                 ) : ICreateSecurity
+                                 ) : IStrategySecurity
     {
+        public string OperationType => ManagementProcessType.CreateOrActiveColaborator.ToString();
+
         public async Task<GenericResponse<bool>> CreateAsync(SecurityRequest securityRequest)
         {
             var colaborator = await getByIdColaborator.GetByIdAsync(securityRequest.ColaboratorId);
@@ -30,19 +30,57 @@ namespace ManagementModule.Features.CreateSecurityFeature
                 return new GenericResponse<bool>("Colaborator is active", true);
             }
 
-            var securityPassword = passwordHashWithSalt.HashPassword(colaborator.Data.Name);
+            Security? existingSecurity = await GetSecurityByColaboratorId(securityRequest);
 
-            Security security = await SaveChangesAsync(colaborator, securityPassword);
+            if (existingSecurity != null)
+            {
+                Security securityUpdate = await UpdateChangeAsync(existingSecurity);
 
-            await colaboratorRedis.RemoveListAll();
+                await RemoveRedisAndNotificationHub(colaborator, securityUpdate);
 
-            await NotificationHub(colaborator, security);
+                return new GenericResponse<bool>("Success active security", true);
+            }
+
+            Security security = await SaveChangesAsync(colaborator);
+
+            await RemoveRedisAndNotificationHub(colaborator, security);
 
             return new GenericResponse<bool>("Success create security", true);
         }
 
-        private async Task<Security> SaveChangesAsync(GenericResponse<ColaboratorDto> colaborator, HashPasswordResponse securityPassword)
+        private async Task<Security?> GetSecurityByColaboratorId(SecurityRequest securityRequest)
         {
+            return await managementContext.Securities.AsNoTracking().FirstOrDefaultAsync(s => s.ColaboratorId == securityRequest.ColaboratorId);
+        }
+
+        private async Task RemoveRedisAndNotificationHub(GenericResponse<ColaboratorDto> colaborator, Security securityUpdate)
+        {
+            await colaboratorRedis.RemoveListAll();
+
+            await NotificationHub(colaborator, securityUpdate);
+        }
+
+        private async Task<Security> UpdateChangeAsync(Security existingSecurity)
+        {
+            var securityUpdate = new Security()
+            {
+                Id = existingSecurity.Id,
+                Email = existingSecurity.Email,
+                Password = existingSecurity.Password,
+                Salt = existingSecurity.Salt,
+                ColaboratorId = existingSecurity.ColaboratorId,
+                Active = true
+            };
+
+            managementContext.Securities.Update(securityUpdate);
+            await managementContext.SaveChangesAsync();
+            return securityUpdate;
+        }
+
+        private async Task<Security> SaveChangesAsync(GenericResponse<ColaboratorDto> colaborator)
+        {
+            var securityPassword = passwordHashWithSalt.HashPassword(colaborator.Data.Name);
+
             var security = new Security()
             {
                 Email = colaborator.Data.Email,

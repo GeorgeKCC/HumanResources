@@ -10,6 +10,7 @@
 
         public static IServiceCollection ServicesSharedModule(this IServiceCollection service, IConfiguration configuration)
         {
+            ConfigHttpContextAccessor(service);
             ConfigDatabase(service, configuration);
             ConfigHybridCache(service, configuration);
             ConfigCors(service, configuration);
@@ -21,6 +22,11 @@
             ConfigSignalR(service);
             ConfigDataProtection(service);
             return service;
+        }
+
+        private static void ConfigHttpContextAccessor(IServiceCollection service)
+        {
+            service.AddHttpContextAccessor();
         }
 
         public static IApplicationBuilder ApplicationSharedModule(this IApplicationBuilder app)
@@ -182,6 +188,11 @@
         {
             builder.Services.Configure<TokenConfiguration>(builder.Configuration.GetSection("Token"));
             builder.Host.UseSerilog(SeriLogger.Configure);
+            builder.Host.UseDefaultServiceProvider(options =>
+            {
+                options.ValidateOnBuild = true;
+                options.ValidateScopes = true;
+            });
         }
 
         static TokenConfiguration GetConfigurationToken(IConfiguration configuration)

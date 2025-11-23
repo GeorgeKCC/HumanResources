@@ -30,10 +30,10 @@ export const appConfig: ApplicationConfig = {
       player: () => player,
     }),
     provideHttpClient(
-      withFetch()
-      // withInterceptors([
-      //   xsrfInterceptor 
-      // ])
+      withFetch(),
+      withInterceptors([
+         xsrfInterceptor 
+      ])
     ),
     MessageService,
     provideAppInitializer(() => {

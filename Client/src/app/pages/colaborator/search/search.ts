@@ -64,4 +64,11 @@ export class Search implements OnInit {
    };
    await this.managementService.activeAccess(activeAccess);
   }
+
+  async deactivateAccess(colaborator: ColaboratorModel){
+    const activeAccess: ManagementActiveAccessModel = {
+       colaboratorId: colaborator.id,
+    };
+    await this.managementService.deactivateAccess(activeAccess);
+   }
 }

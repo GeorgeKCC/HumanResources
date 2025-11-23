@@ -7,7 +7,6 @@ import { ColaboratorModel } from '../models/colaborator.model';
 import { SignalrService } from '../../../shared/services/signalr.service';
 import { ColaboratorCreateModel } from '../models/colaboratorCreate.model';
 import { ToastService } from '../../../shared/services/toast.service';
-import { LoginService } from '../../auth/services/login.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,12 +15,14 @@ export class ColaboratorService {
   http = inject(HttpClient);
   signalrService = inject(SignalrService);
   toastService = inject(ToastService);
-  loginService = inject(LoginService);
 
   isLoading = signal<boolean>(false);
   data = signal<ColaboratorModel[]>([]);
   hasError = signal<boolean>(false);
   colaborator = signal<ColaboratorModel | null>(null);
+
+  isUpdateLoading = signal<boolean>(false);
+  updateStatus = signal<string | null>(null);
 
   constructor() {
     effect(() => {
@@ -31,15 +32,17 @@ export class ColaboratorService {
         this.updateOrAddColaborator(currentData, colaborator);
       }
     });
+    effect(() => {
+      const status = this.signalrService.colaboratorUpdateStatusHub();
+      this.updateStatus.set(status);
+    });
   }
 
   async getColaborators() {
     try {
       this.isLoading.set(true);
       const result = await lastValueFrom(
-        this.http.get<GenericModel<ColaboratorModel[]>>(Environment.apiUrl + '/colaborator', {
-          withCredentials: true,
-        })
+        this.http.get<GenericModel<ColaboratorModel[]>>(Environment.apiUrl + '/colaborator')
       );
       this.data.set(result.data);
       this.isLoading.set(false);
@@ -53,9 +56,7 @@ export class ColaboratorService {
     try {
       this.isLoading.set(true);
       const result = await lastValueFrom(
-        this.http.get<GenericModel<ColaboratorModel>>(Environment.apiUrl + '/colaborator/' + id, {
-          withCredentials: true,
-        })
+        this.http.get<GenericModel<ColaboratorModel>>(Environment.apiUrl + '/colaborator/' + id)
       );
       this.colaborator.set(result.data);
       this.isLoading.set(false);
@@ -68,12 +69,10 @@ export class ColaboratorService {
   async createColaborator(colaborator: ColaboratorCreateModel) {
     try {
       this.isLoading.set(true);
-      var tokenCrsf = await this.loginService.getTokeCsrf();
       await lastValueFrom(
         this.http.post<GenericModel<ColaboratorModel>>(
           Environment.apiUrl + '/colaborator',
-          colaborator,
-          { withCredentials: true, headers: { 'X-XSRF-TOKEN': tokenCrsf } }
+          colaborator
         )
       );
       this.toastService.showToast({
@@ -94,6 +93,21 @@ export class ColaboratorService {
           code: error.status,
         });
       }
+    }
+  }
+
+  async updateColaborator(colaborator: ColaboratorCreateModel, id: number) {
+    try {
+      this.isUpdateLoading.set(true);
+      await lastValueFrom(
+        this.http.put<GenericModel<ColaboratorModel>>(
+          Environment.apiUrl + '/colaborator/' + id,
+          colaborator
+        )
+      );
+      this.isUpdateLoading.set(false);
+    } catch (error) {
+      this.isUpdateLoading.set(false);
     }
   }
 
