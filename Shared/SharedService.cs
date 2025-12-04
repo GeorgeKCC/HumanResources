@@ -1,4 +1,10 @@
-﻿namespace Shared
+﻿using RedLockNet;
+using RedLockNet.SERedis;
+using RedLockNet.SERedis.Configuration;
+using Shared.RedLock;
+using StackExchange.Redis;
+
+namespace Shared
 {
     public static class SharedService
     {
@@ -34,6 +40,7 @@
             app.UseCors("CorsPolicy");
             app.UseAntiforgery();
             app.UseMiddleware<CorrelationMiddleware>();
+            app.UseMiddleware<RedLockMiddleware>();
             app.UseExceptionHandler(x => { });
             app.UseAuthentication();
             app.UseAuthorization();
@@ -88,10 +95,15 @@
         {
             service.AddMemoryCache();
 
-            service.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = configuration.GetConnectionString("Redis");
-            });
+            service.AddSingleton<IConnectionMultiplexer>(sp =>
+            ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis") 
+                                          ?? throw new Ex("Not found connection redis")));
+
+
+            //service.AddStackExchangeRedisCache(options =>
+            //{
+            //    options.Configuration = configuration.GetConnectionString("Redis");
+            //});
 
             service.AddHybridCache(options =>
             {
@@ -100,6 +112,18 @@
                     Expiration = TimeSpan.FromMinutes(5),
                     LocalCacheExpiration = TimeSpan.FromMinutes(1)
                 };
+            });
+
+            service.AddSingleton<RedLockFactory>(sp =>
+            {
+                var mux = sp.GetRequiredService<IConnectionMultiplexer>();
+                if (mux == null || !mux.IsConnected)
+                    throw new InvalidOperationException("Redis connection is not available for RedLockFactory.");
+
+                return RedLockFactory.Create(
+                [
+                    new RedLockMultiplexer(mux)
+                ]);
             });
         }
 

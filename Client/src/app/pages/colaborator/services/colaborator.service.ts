@@ -89,7 +89,8 @@ export class ColaboratorService {
         this.toastService.showToast({
           severity: 'error',
           summary: 'Error',
-          message: 'Error creating colaborator. Please try again later.',
+          message: error.status == 409 ? 'This operation already for other process.' :
+                                         'Error creating colaborator. Please try again later.',
           code: error.status,
         });
       }

@@ -1,6 +1,4 @@
-﻿using Shared.Securities.Contracts;
-using Shared.Securities.Models;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 
 namespace Shared.Securities.Encriptions
 {
