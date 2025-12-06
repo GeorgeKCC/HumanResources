@@ -11,6 +11,7 @@ export class SignalrService {
   hubConnection?: HubConnection;
   colaboratorHub = signal<ColaboratorModel | null>(null);
   colaboratorUpdateStatusHub = signal<string | null>(null);
+  colaboratorCompleteUpdateHub = signal<string | null>(null);
 
   createHubConnection() {
     this.hubConnection = new HubConnectionBuilder()
@@ -28,6 +29,10 @@ export class SignalrService {
 
     this.hubConnection.on('StatusUpdateCollaboratorNotification', (status: string ) => {
       this.colaboratorUpdateStatusHub.set(status);
+    });
+
+    this.hubConnection.on('CompleteUpdateCollaboratorNotification', (status: string ) => {
+      this.colaboratorCompleteUpdateHub.set(status);
     });
   }
 

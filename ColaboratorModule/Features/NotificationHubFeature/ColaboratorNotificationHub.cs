@@ -17,8 +17,19 @@ namespace ColaboratorModule.Features.NotificationHubFeature
 
         public async Task NotificationStatusUpdateColaborator(string status)
         {
-            var conectionId = NotificationHub.GetConnectionIdByEmail(httpContextAccessor.HttpContext.User.GetEmail());
-            await hubContext.Clients.Client(conectionId).SendAsync("StatusUpdateCollaboratorNotification", status);
+            await hubContext.Clients.Client(GetConnectionId()).SendAsync("StatusUpdateCollaboratorNotification", status);
+        }
+
+        public async Task NotificationCompleteUpdateColaborator(int colaboratorId)
+        {
+            await hubContext.Clients.Client(GetConnectionId()).SendAsync("CompleteUpdateCollaboratorNotification", colaboratorId);
+        }
+
+        private string GetConnectionId()
+        {
+            var userEmail = httpContextAccessor?.HttpContext?.User.GetEmail() ?? string.Empty;
+            var conectionId = NotificationHub.GetConnectionIdByEmail(userEmail) ?? string.Empty;
+            return conectionId;
         }
     }
 }

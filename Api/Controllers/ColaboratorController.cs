@@ -3,19 +3,16 @@ using ColaboratorContract.Dtos.Request;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Hybrid;
 
 namespace HumanResourcesApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class ColaboratorController(
-                                        HybridCache hybridCache,
-                                        ICreateColaborator createColaborator,
-                                        IUpdateColaborator updateColaborator,
-                                        IGetAllColaborator getAllColaborator,
-                                        IGetByIdColaborator getByIdColaborator
+    public class ColaboratorController(ICreateColaborator createColaborator,
+                                       IUpdateColaborator updateColaborator,
+                                       IGetAllColaborator getAllColaborator,
+                                       IGetByIdColaborator getByIdColaborator
                                       ) : ControllerBase
     {
         [HttpPost]
@@ -47,9 +44,7 @@ namespace HumanResourcesApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var response = await hybridCache.GetOrCreateAsync(
-                           $"keyColaborator_{id}",
-                            async _ => await getByIdColaborator.GetByIdAsync(id));
+            var response = await getByIdColaborator.GetByIdAsync(id);
             return Ok(response);
         }
     }

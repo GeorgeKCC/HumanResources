@@ -36,6 +36,10 @@ export class ColaboratorService {
       const status = this.signalrService.colaboratorUpdateStatusHub();
       this.updateStatus.set(status);
     });
+    effect(() => {
+      const complete = this.signalrService.colaboratorCompleteUpdateHub();
+      this.updateStatus.set('');
+    });
   }
 
   async getColaborators() {

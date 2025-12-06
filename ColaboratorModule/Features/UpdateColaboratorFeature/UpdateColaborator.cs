@@ -31,6 +31,7 @@ namespace ColaboratorModule.Features.UpdateColaboratorFeature
 
             if (IsIdempotent(updateColaboratorRequest, colaborator))
             {
+                await NotificationSteps(4, colaborator.Id);
                 return new GenericResponse<ColaboratorDto>("No changes detected", colaborator.Map(colaborator.Id));
             }
 
@@ -51,10 +52,12 @@ namespace ColaboratorModule.Features.UpdateColaboratorFeature
 
             await NotificationSteps(3);
 
+            await NotificationSteps(4, colaboratorDto.Id);
+
             return new GenericResponse<ColaboratorDto>("Update colaborator success", colaboratorDto);
         }
 
-        private async Task NotificationSteps(int step)
+        private async Task NotificationSteps(int step, int colaboratorId = 0)
         {
             switch (step)
             {
@@ -67,6 +70,9 @@ namespace ColaboratorModule.Features.UpdateColaboratorFeature
                     break;
                 case 3:
                     await colaboratorNotificationHub.NotificationStatusUpdateColaborator(UpdateStatusConstants.Finish);
+                    break;
+                case 4:
+                    await colaboratorNotificationHub.NotificationCompleteUpdateColaborator(colaboratorId);
                     break;
                 default:
                     break;

@@ -12,8 +12,13 @@ namespace Shared.Securities.Encriptions
         {
             byte[] saltBytes = RandomNumberGenerator.GetBytes(SALT_SIZE);
 
-            using var pbkdf2 = new Rfc2898DeriveBytes(password, saltBytes, ITERATIONS, HashAlgorithmName.SHA256);
-            byte[] hashBytes = pbkdf2.GetBytes(HASH_SIZE);
+            byte[] hashBytes = Rfc2898DeriveBytes.Pbkdf2(
+                password,
+                saltBytes,
+                ITERATIONS,
+                HashAlgorithmName.SHA256,
+                HASH_SIZE
+            );
 
             string hash = Convert.ToBase64String(hashBytes);
             string salt = Convert.ToBase64String(saltBytes);
@@ -29,8 +34,13 @@ namespace Shared.Securities.Encriptions
         {
             byte[] saltBytes = Convert.FromBase64String(storedSalt);
 
-            using var pbkdf2 = new Rfc2898DeriveBytes(password, saltBytes, ITERATIONS, HashAlgorithmName.SHA256);
-            byte[] hashBytes = pbkdf2.GetBytes(HASH_SIZE);
+            byte[] hashBytes = Rfc2898DeriveBytes.Pbkdf2(
+                password,
+                saltBytes,
+                ITERATIONS,
+                HashAlgorithmName.SHA256,
+                HASH_SIZE
+            );
             string hash = Convert.ToBase64String(hashBytes);
 
             return hash == storedHash;

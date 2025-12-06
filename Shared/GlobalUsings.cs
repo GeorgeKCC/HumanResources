@@ -40,3 +40,9 @@ global using System.Collections.Concurrent;
 global using Microsoft.AspNetCore.DataProtection;
 global using Shared.Correlation;
 global using Shared.Securities.Constants;
+global using RedLockNet.SERedis;
+global using System.Text.Json;
+global using RedLockNet.SERedis.Configuration;
+global using Shared.RedLock;
+global using StackExchange.Redis;
+

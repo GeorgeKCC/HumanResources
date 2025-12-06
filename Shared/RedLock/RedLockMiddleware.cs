@@ -1,7 +1,4 @@
-﻿using RedLockNet.SERedis;
-using System.Text.Json;
-
-namespace Shared.RedLock
+﻿namespace Shared.RedLock
 {
     internal class RedLockMiddleware(RequestDelegate next)
     {

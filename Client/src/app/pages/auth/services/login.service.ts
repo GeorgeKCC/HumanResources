@@ -6,6 +6,8 @@ import { lastValueFrom } from 'rxjs';
 import { ToastService } from '../../../shared/services/toast.service';
 import { Router } from '@angular/router';
 import { SignalrService } from '../../../shared/services/signalr.service';
+import { GenericModel } from '../../../shared/models/generic-model/generic.model';
+import { LoginResponse } from '../models/LoginResponse.model';
 
 @Injectable({
   providedIn: 'root',
@@ -22,9 +24,11 @@ export class LoginService {
   async login(loginModel: LoginModel) {
     try {
       this.isLoading.set(true);
-      await lastValueFrom(
-        this.http.post(Environment.apiUrl + '/login', loginModel)
+      var response = await lastValueFrom(
+        this.http.post<GenericModel<LoginResponse>>(Environment.apiUrl + '/login', loginModel)
       );
+
+      sessionStorage.setItem('userEmail', response.data.email);
       this.signalrService.createHubConnection();
       this.isLoggedIn.set(true);
       this.isLoading.set(false);

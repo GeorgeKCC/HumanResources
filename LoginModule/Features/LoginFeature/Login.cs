@@ -1,5 +1,6 @@
 ﻿using LoginContract.Contract;
 using LoginContract.Dtos.Requests;
+using LoginContract.Dtos.Responses;
 using ManagementContract.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -16,7 +17,7 @@ namespace LoginModule.Features.LoginFeature
                              ITokensInsideCookie tokensInsideCookie
                             ) : ILogin
     {
-        public async Task<GenericResponse<bool>> LoginAsync(LoginRequest loginRequest, HttpContext httpContext)
+        public async Task<GenericResponse<LoginDto>> LoginAsync(LoginRequest loginRequest, HttpContext httpContext)
         {
             var security = await getByEmailSecurity.GetByEmailAsync(loginRequest.Username);
             var isPasswordCorrect = passwordHashWithSalt.VerifyPassword(loginRequest.Password, security.Password, security.Salt);
@@ -29,7 +30,7 @@ namespace LoginModule.Features.LoginFeature
             logger.LogInformation("User {Username} logged in successfully at {Timestamp}", loginRequest.Username, DateTime.UtcNow);
             var token = generateToken.CreateToken(security.Email, security.ColaboratorId.ToString());
             tokensInsideCookie.SetTokensInsideCookie(token, httpContext);
-            return new GenericResponse<bool>("Login success", true);
+            return new GenericResponse<LoginDto>("Login success", new LoginDto(security.Email));
         }
     }
 }

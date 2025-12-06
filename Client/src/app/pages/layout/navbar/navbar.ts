@@ -9,7 +9,12 @@ import { LoginService } from '../../auth/services/login.service';
 })
 export class Navbar {
   loginService = inject(LoginService);
-
+  
+  emailUser: string | null;
+  
+  constructor() {
+    this.emailUser = sessionStorage.getItem('userEmail');
+  }
   logOut(){
     this.loginService.logOut();
   }

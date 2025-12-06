@@ -7,5 +7,7 @@ namespace ColaboratorContract.Contracts
         Task NotificationCreateColaborator(ColaboratorDto colaboratorDto);
 
         Task NotificationStatusUpdateColaborator(string status);
+
+        Task NotificationCompleteUpdateColaborator(int colaboratorId);
     }
 }

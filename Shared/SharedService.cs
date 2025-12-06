@@ -1,10 +1,4 @@
-﻿using RedLockNet;
-using RedLockNet.SERedis;
-using RedLockNet.SERedis.Configuration;
-using Shared.RedLock;
-using StackExchange.Redis;
-
-namespace Shared
+﻿namespace Shared
 {
     public static class SharedService
     {
@@ -98,12 +92,6 @@ namespace Shared
             service.AddSingleton<IConnectionMultiplexer>(sp =>
             ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis") 
                                           ?? throw new Ex("Not found connection redis")));
-
-
-            //service.AddStackExchangeRedisCache(options =>
-            //{
-            //    options.Configuration = configuration.GetConnectionString("Redis");
-            //});
 
             service.AddHybridCache(options =>
             {

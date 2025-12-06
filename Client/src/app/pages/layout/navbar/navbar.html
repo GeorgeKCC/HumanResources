@@ -42,7 +42,7 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            Dropdown
+            @if (loginService.isLoggedIn()) { {{emailUser}} }
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
             <li><a class="dropdown-item" href="#">Action</a></li>
