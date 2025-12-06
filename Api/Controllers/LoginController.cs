@@ -1,11 +1,13 @@
 ﻿using LoginContract.Contract;
 using LoginContract.Dtos.Requests;
+using LoginContract.Dtos.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Shared.Generics.Response;
 using Shared.Securities.Constants;
 using Shared.Securities.Models;
+using System.Security.Claims;
 
 namespace HumanResourcesApi.Controllers
 {
@@ -28,7 +30,8 @@ namespace HumanResourcesApi.Controllers
         {
             if (HttpContext.User.Identity?.IsAuthenticated == true)
             {
-                var response = new GenericResponse<bool>("Login success", true);
+                var email = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)!;
+                var response = new GenericResponse<LoginDto>("Login success", new LoginDto(email.Value));
                 return Ok(response);
             }
 

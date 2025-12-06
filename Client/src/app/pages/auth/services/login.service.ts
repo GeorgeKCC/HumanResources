@@ -54,12 +54,13 @@ export class LoginService {
   async status(): Promise<boolean> {
     try {
       this.isLoading.set(true);
-      await lastValueFrom(
-        this.http.post<boolean>(
+     var response = await lastValueFrom(
+        this.http.post<GenericModel<LoginResponse>>(
           Environment.apiUrl + '/login/auth-status',
           {}
         )
       );
+      sessionStorage.setItem('userEmail', response.data.email);
       this.isLoggedIn.set(true);
       this.isLoading.set(false);
       return true;
@@ -82,6 +83,7 @@ export class LoginService {
           Environment.apiUrl + '/login/logout',
           {}
         ));
+      sessionStorage.removeItem('userEmail');
       this.isLoggedIn.set(false);
       this.isLoading.set(false);
       this.signalrService.stopHubConnection();
