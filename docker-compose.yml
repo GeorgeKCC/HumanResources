@@ -17,4 +17,7 @@ services:
   portainer:
     image: portainer/portainer-ce
 
+  messagebus:
+    image: rabbitmq:management
+
   

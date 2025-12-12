@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Shared.Context;
 using Shared.Entities;
 using Shared.Generics.Response;
+using Shared.RabbitMQ.Contract;
+using Shared.RabbitMQ.Queued;
 using Shared.Securities.Contracts;
 
 namespace ManagementModule.Features.CreateSecurityFeature
@@ -16,7 +18,8 @@ namespace ManagementModule.Features.CreateSecurityFeature
                                   IGetByIdColaborator getByIdColaborator,
                                   IPasswordHashWithSalt passwordHashWithSalt,
                                   IColaboratorNotificationHub colaboratorNotificationHub,
-                                  IColaboratorRedis colaboratorRedis
+                                  IColaboratorRedis colaboratorRedis,
+                                  IPublishRabbitMQ publisherRabbitMQ
                                  ) : IStrategySecurity
     {
         public string OperationType => ManagementProcessType.CreateOrActiveColaborator.ToString();
@@ -34,18 +37,36 @@ namespace ManagementModule.Features.CreateSecurityFeature
 
             if (existingSecurity != null)
             {
-                Security securityUpdate = await UpdateChangeAsync(existingSecurity);
-
-                await RemoveRedisAndNotificationHub(colaborator, securityUpdate);
-
-                return new GenericResponse<bool>("Success active security", true);
+                return await ActiveFlagSecurity(colaborator, existingSecurity);
             }
 
-            Security security = await SaveChangesAsync(colaborator);
-
-            await RemoveRedisAndNotificationHub(colaborator, security);
+            await CreateSecurityAndNotification(colaborator);
 
             return new GenericResponse<bool>("Success create security", true);
+        }
+
+        private async Task CreateSecurityAndNotification(GenericResponse<ColaboratorDto> colaborator)
+        {
+            Security security = await SaveChangesAsync(colaborator);
+
+            await RemoveRedis();
+
+            await NotificationHub(colaborator, security);
+
+            await publisherRabbitMQ.PublishAsync(new QueueCollaboratorPassword(security.Password,
+                                                                                  colaborator.Data.Email,
+                                                                                  $"{colaborator.Data.Name} {colaborator.Data.LastName}"));
+        }
+
+        private async Task<GenericResponse<bool>> ActiveFlagSecurity(GenericResponse<ColaboratorDto> colaborator, Security existingSecurity)
+        {
+            Security securityUpdate = await UpdateChangeAsync(existingSecurity);
+
+            await RemoveRedis();
+
+            await NotificationHub(colaborator, securityUpdate);
+
+            return new GenericResponse<bool>("Success active security", true);
         }
 
         private async Task<Security?> GetSecurityByColaboratorId(SecurityRequest securityRequest)
@@ -53,11 +74,9 @@ namespace ManagementModule.Features.CreateSecurityFeature
             return await managementContext.Securities.AsNoTracking().FirstOrDefaultAsync(s => s.ColaboratorId == securityRequest.ColaboratorId);
         }
 
-        private async Task RemoveRedisAndNotificationHub(GenericResponse<ColaboratorDto> colaborator, Security securityUpdate)
+        private async Task RemoveRedis()
         {
             await colaboratorRedis.RemoveListAll();
-
-            await NotificationHub(colaborator, securityUpdate);
         }
 
         private async Task<Security> UpdateChangeAsync(Security existingSecurity)

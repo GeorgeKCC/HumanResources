@@ -1,4 +1,9 @@
-﻿namespace Shared
+﻿using RabbitMQ.Client;
+using Shared.RabbitMQ.Contract;
+using Shared.RabbitMQ.Impl;
+using Shared.RabbitMQ.Models;
+
+namespace Shared
 {
     public static class SharedService
     {
@@ -21,6 +26,22 @@
             ConfigServices(service);
             ConfigSignalR(service);
             ConfigDataProtection(service);
+            return service;
+        }
+
+        public static IServiceCollection ServiceRabbitMQ(this IServiceCollection service, IConfiguration configuration)
+        {
+
+            var rabbitMQ = configuration.GetSection("MessageBroker").Get<RabbitMQConexion>() ?? throw new Ex("Not implemented configuration rabbitmq");
+            service.AddSingleton(new RabbitMQPersistentConnection(
+                hostName: rabbitMQ.Host,
+                userName: rabbitMQ.UserName,
+                password: rabbitMQ.Password
+            ));
+
+            service.AddSingleton<PublisherRabbitMQ>();
+            service.AddScoped<IPublishRabbitMQ, PublishRabbitMQ>();
+
             return service;
         }
 
@@ -90,7 +111,7 @@
             service.AddMemoryCache();
 
             service.AddSingleton<IConnectionMultiplexer>(sp =>
-            ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis") 
+            ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis")
                                           ?? throw new Ex("Not found connection redis")));
 
             service.AddHybridCache(options =>

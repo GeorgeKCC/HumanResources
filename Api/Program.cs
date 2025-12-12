@@ -11,7 +11,7 @@ builder.Services.AddControllers();
 // Add services to the container.
 RegisterServiceShared(builder);
 builder.Services.RegisterColaboratorServices();
-builder.Services.RegisterManagementServices();
+builder.Services.RegisterManagementServices(builder.Configuration);
 builder.Services.RegisterLoginService();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
