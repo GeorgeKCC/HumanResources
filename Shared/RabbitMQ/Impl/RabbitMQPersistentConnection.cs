@@ -1,5 +1,4 @@
 ﻿using RabbitMQ.Client;
-using Shared.RabbitMQ.Contract;
 
 namespace Shared.RabbitMQ.Impl
 {
@@ -24,6 +23,7 @@ namespace Shared.RabbitMQ.Impl
                 return _connection;
 
             _connection = await _factory.CreateConnectionAsync();
+
             return _connection;
         }
     }

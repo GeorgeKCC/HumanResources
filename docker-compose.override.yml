@@ -23,6 +23,18 @@ services:
       - distributedcache
       - messagebus
 
+  deamonnotification:
+    environment:
+      - DOTNET_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - MessageBroker__Host=humanresource-mq
+      - MessageBroker__UserName=guest
+      - MessageBroker__Password=guest
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+
   distributedcache:
     container_name: distributedcache
     restart: always

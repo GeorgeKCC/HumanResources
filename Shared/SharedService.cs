@@ -1,5 +1,4 @@
-﻿using RabbitMQ.Client;
-using Shared.RabbitMQ.Contract;
+﻿using Shared.RabbitMQ.Contract;
 using Shared.RabbitMQ.Impl;
 using Shared.RabbitMQ.Models;
 
@@ -31,7 +30,6 @@ namespace Shared
 
         public static IServiceCollection ServiceRabbitMQ(this IServiceCollection service, IConfiguration configuration)
         {
-
             var rabbitMQ = configuration.GetSection("MessageBroker").Get<RabbitMQConexion>() ?? throw new Ex("Not implemented configuration rabbitmq");
             service.AddSingleton(new RabbitMQPersistentConnection(
                 hostName: rabbitMQ.Host,
@@ -41,10 +39,31 @@ namespace Shared
 
             service.AddSingleton<PublisherRabbitMQ>();
             service.AddScoped<IPublishRabbitMQ, PublishRabbitMQ>();
+            service.AddScoped<IConsumerRabbitMQ, RabbitMqConsumer>();
 
             return service;
         }
 
+        public static IServiceCollection ServiceConsumerRabbitMQ(this IServiceCollection service, IConfiguration configuration)
+        {
+            var rabbitMQ = configuration.GetSection("MessageBroker").Get<RabbitMQConexion>() ?? throw new Ex("Not implemented configuration rabbitmq");
+            service.AddSingleton(new RabbitMQPersistentConnection(
+                hostName: rabbitMQ.Host,
+                userName: rabbitMQ.UserName,
+                password: rabbitMQ.Password
+            ));
+
+            service.AddSingleton<IConsumerRabbitMQ, RabbitMqConsumer>();
+
+            return service;
+        }
+
+        public static IServiceCollection ServiceConnectionDatabase(this IServiceCollection service, IConfiguration configuration)
+        {
+            ConfigDatabase(service, configuration);
+            return service;
+        }
+        
         private static void ConfigHttpContextAccessor(IServiceCollection service)
         {
             service.AddHttpContextAccessor();

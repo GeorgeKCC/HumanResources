@@ -5,6 +5,12 @@ services:
       context: .
       dockerfile: Api/Dockerfile
 
+  deamonnotification:
+    image: ${DOCKER_REGISTRY-}deamonnotification
+    build:
+      context: .
+      dockerfile: Deamons/DeamonNotification/Dockerfile
+
   distributedcache:
     image: redis
 
@@ -19,5 +25,3 @@ services:
 
   messagebus:
     image: rabbitmq:management
-
-  

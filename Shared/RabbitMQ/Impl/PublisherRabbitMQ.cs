@@ -1,5 +1,4 @@
 ﻿using RabbitMQ.Client;
-using System.Threading.Channels;
 
 namespace Shared.RabbitMQ.Impl
 {
@@ -25,7 +24,7 @@ namespace Shared.RabbitMQ.Impl
                exclusive: false,
                autoDelete: false,
                arguments: null
-           );
+            );
 
             await channel.QueueBindAsync(
                 queue: queuedName,
