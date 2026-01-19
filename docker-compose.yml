@@ -1,0 +1,33 @@
+services:
+  humanresourcesapi:
+    image: ${DOCKER_REGISTRY-}humanresourcesapi
+    build:
+      context: .
+      dockerfile: Api/Dockerfile
+
+  deamonnotification:
+    image: ${DOCKER_REGISTRY-}deamonnotification
+    build:
+      context: .
+      dockerfile: Deamons/DeamonNotification/Dockerfile
+
+  distributedcache:
+    image: redis
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.1.4 
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:9.1.4
+
+  portainer:
+    image: portainer/portainer-ce
+
+  messagebus:
+    image: rabbitmq:management
+
+  qdrant:
+    image: qdrant/qdrant:latest
+
+  ollama:
+    image: ollama/ollama:latest

@@ -1,0 +1,53 @@
+<div class="container-fluid pt-3">
+  @if(colaboratorService.isLoading()){
+  <label>Loading...</label>
+  }@else{ @if(!colaboratorService.isUpdateLoading() && colaboratorService.updateStatus() == "") {
+  <div class="container-fluid pt-3">
+    <form [formGroup]="colaboratorForm" (ngSubmit)="subtmit()" novalidate>
+      <div class="row pt-3">
+        <div class="col-auto">
+          <label for="name" class="font-semibold w-24">Nombres</label>
+          <input class="form-control" placeholder="Nombres" formControlName="name" />
+        </div>
+        <div class="col-auto">
+          <label for="lastName" class="font-semibold w-24">Apellidos</label>
+          <input class="form-control" placeholder="Apellidos" formControlName="lastName" />
+        </div>
+      </div>
+      <div class="row pt-3">
+        <div class="col-auto">
+          <label for="email" class="font-semibold w-24">Email</label>
+          <input class="form-control" placeholder="Email" formControlName="email" />
+        </div>
+      </div>
+      <div class="row pt-3">
+        <div class="col-auto">
+          <label for="documentType" class="font-semibold w-24">Tipo de Documento</label>
+          <input
+            class="form-control"
+            placeholder="Tipo de Documento"
+            formControlName="documentType"
+          />
+        </div>
+        <div class="col-auto">
+          <label for="documentNumber" class="font-semibold w-24">N° de Documento</label>
+          <input
+            class="form-control"
+            placeholder="N° de Documento"
+            formControlName="documentNumber"
+          />
+        </div>
+      </div>
+      <div class="row pt-3">
+        <div class="col-auto">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  }@else {
+  <label>{{ colaboratorService.updateStatus() }}</label>
+  @if (colaboratorService.updateStatus() == "Finish") {
+  <button (click)="router.navigate(['/colaborator'])">Volver</button>
+  } } }
+</div>

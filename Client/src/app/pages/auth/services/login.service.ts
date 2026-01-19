@@ -1,0 +1,101 @@
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
+import { LoginModel } from '../models/login.model';
+import { Environment } from '../../../environment/environment.dev';
+import { lastValueFrom } from 'rxjs';
+import { ToastService } from '../../../shared/services/toast.service';
+import { Router } from '@angular/router';
+import { SignalrService } from '../../../shared/services/signalr.service';
+import { GenericModel } from '../../../shared/models/generic-model/generic.model';
+import { LoginResponse } from '../models/LoginResponse.model';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class LoginService {
+  http = inject(HttpClient);
+  toastService = inject(ToastService);
+  router = inject(Router);
+  signalrService = inject(SignalrService);
+
+  isLoggedIn = signal<boolean>(false);
+  isLoading = signal<boolean>(false);
+
+  async login(loginModel: LoginModel) {
+    try {
+      this.isLoading.set(true);
+      var response = await lastValueFrom(
+        this.http.post<GenericModel<LoginResponse>>(Environment.apiUrl + '/login', loginModel)
+      );
+
+      sessionStorage.setItem('userEmail', response.data.email);
+      this.signalrService.createHubConnection();
+      this.isLoggedIn.set(true);
+      this.isLoading.set(false);
+      this.router.navigate(['/']);
+    } catch (error) {
+      this.isLoggedIn.set(false);
+      this.isLoading.set(false);
+      if (error instanceof HttpErrorResponse) {
+        this.toastService.showToast({
+          severity: 'error',
+          summary: 'Error',
+          message:
+            error.status === 401
+              ? 'Usuario o contraseña incorrectos'
+              : 'Error desconocido. Intenta nuevamente más tarde',
+          code: error.status,
+        });
+        console.error('Error status code:', error.status);
+      }
+    }
+  }
+
+  async status(): Promise<boolean> {
+    try {
+      this.isLoading.set(true);
+     var response = await lastValueFrom(
+        this.http.post<GenericModel<LoginResponse>>(
+          Environment.apiUrl + '/login/auth-status',
+          {}
+        )
+      );
+      sessionStorage.setItem('userEmail', response.data.email);
+      this.isLoggedIn.set(true);
+      this.isLoading.set(false);
+      return true;
+    } catch (error) {
+      this.isLoggedIn.set(false);
+      this.isLoading.set(false);
+      return false;
+    }
+  }
+
+  checkLoginStatus() {
+    return this.isLoggedIn;
+  }
+
+  async logOut(){
+    try{
+      this.isLoading.set(true);
+      await lastValueFrom(
+        this.http.post<boolean>(
+          Environment.apiUrl + '/login/logout',
+          {}
+        ));
+      sessionStorage.removeItem('userEmail');
+      this.isLoggedIn.set(false);
+      this.isLoading.set(false);
+      this.signalrService.stopHubConnection();
+      this.router.navigate(['/login']);
+    }
+    catch(error){
+      console.error('Error status code:', error);
+    }
+  }
+
+  async getTokenCsrf() : Promise<string>{
+   var response = await lastValueFrom(this.http.get<{requestToken: string}>(Environment.apiUrl + '/login/security/csrf', { withCredentials: true }));
+   return response.requestToken; 
+  }
+}

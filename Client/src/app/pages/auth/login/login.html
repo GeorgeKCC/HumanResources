@@ -1,0 +1,92 @@
+<div class="login-wrapper d-flex align-items-center justify-content-center min-vh-100">
+  <div class="login-card d-flex shadow-lg rounded overflow-hidden">
+    <div
+      class="illustration bg-gradient d-none d-md-flex align-items-center justify-content-center p-4"
+    >
+      <ng-lottie
+        *ngIf="lottieOptions"
+        [options]="lottieOptions"
+        width="350px"
+        height="350px"
+      ></ng-lottie>
+    </div>
+
+    <div class="form-side bg-white p-4 p-md-5">
+      <div class="text-center mb-4">
+        <h2 class="fw-bold text-primary mb-1">Recursos Humanos</h2>
+        <p class="text-primary">Inicia sesión para continuar</p>
+      </div>
+
+      <form [formGroup]="formLogin" (ngSubmit)="onSubmit()" novalidate>
+        <div class="mb-3">
+          <label for="email" class="form-label text-primary">Correo electrónico</label>
+          <input
+            type="email"
+            id="email"
+            class="form-control"
+            placeholder="nombre@empresa.com"
+            formControlName="username"
+            name="email"
+            required
+          />
+          @if(formLogin.get('username')?.invalid && formLogin.get('username')?.touched){
+          <div class="text-danger small mt-1">
+            @if(formLogin.get('username')?.errors?.['required']){
+            <div>El correo es obligatorio</div>
+            } @if(formLogin.get('username')?.errors?.['email']){
+            <div>El correo no es válido</div>
+            }
+          </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label text-primary">Contraseña</label>
+          <div class="input-group">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              class="form-control"
+              placeholder="contraseña"
+              formControlName="password"
+              required
+            />
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="togglePasswordVisibility()"
+            >
+              <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+            </button>
+          </div>
+          <div
+            *ngIf="formLogin.get('password')?.invalid && formLogin.get('password')?.touched"
+            class="text-danger small mt-1"
+          >
+            <div *ngIf="formLogin.get('password')?.errors?.['required']">
+              La contraseña es obligatoria
+            </div>
+          </div>
+        </div>
+
+        <div class="d-grid mt-4">
+          @if(loginService.isLoading()) {
+          <div class="d-flex justify-center">
+            <div class="spinner-border text-primary justify-content-center" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          }@else{
+          <button class="btn btn-primary" [disabled]="formLogin.invalid" type="submit">
+            Ingresar
+          </button>
+          }
+        </div>
+      </form>
+
+      <div class="text-center mt-3">
+        <a href="#" class="text-decoration-none small text-primary">¿Olvidaste tu contraseña?</a>
+      </div>
+    </div>
+  </div>
+</div>
