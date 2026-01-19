@@ -1,4 +1,4 @@
-﻿namespace Shared.RabbitMQ.Contract
+﻿namespace Shared.Securities.RabbitMQ.Contract
 {
     public interface IPublishRabbitMQ
     {

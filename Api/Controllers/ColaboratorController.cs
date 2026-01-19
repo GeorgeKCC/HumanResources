@@ -12,7 +12,8 @@ namespace HumanResourcesApi.Controllers
     public class ColaboratorController(ICreateColaborator createColaborator,
                                        IUpdateColaborator updateColaborator,
                                        IGetAllColaborator getAllColaborator,
-                                       IGetByIdColaborator getByIdColaborator
+                                       IGetByIdColaborator getByIdColaborator,
+                                       IAskWithRagColaborator askWithRagColaborator
                                       ) : ControllerBase
     {
         [HttpPost]
@@ -45,6 +46,13 @@ namespace HumanResourcesApi.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var response = await getByIdColaborator.GetByIdAsync(id);
+            return Ok(response);
+        }
+
+        [HttpPost("Question")]
+        public async Task<IActionResult> AskWithRag(AskQuestionColaboratorRequest askQuestionColaboratorRequest)
+        {
+            var response = await askWithRagColaborator.Ask(askQuestionColaboratorRequest);
             return Ok(response);
         }
     }

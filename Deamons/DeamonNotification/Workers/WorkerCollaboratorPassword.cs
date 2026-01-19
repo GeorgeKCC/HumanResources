@@ -1,6 +1,6 @@
 ﻿using DeamonNotification.Features;
-using Shared.RabbitMQ.Contract;
-using Shared.RabbitMQ.Queued;
+using Shared.Securities.RabbitMQ.Contract;
+using Shared.Securities.RabbitMQ.Queued;
 using System.Text.Json;
 
 namespace DeamonNotification.Workers

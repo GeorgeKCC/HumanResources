@@ -10,6 +10,10 @@ services:
       - MessageBroker__Host=humanresource-mq
       - MessageBroker__UserName=guest
       - MessageBroker__Password=guest
+      - Ollama__OllamaBaseUrl=http://ollama:11434
+      - Qdrant__Host=qdrant
+      - Qdrant__GrpcPort=6334
+      - Qdrant__TimeoutSeconds=10
     ports:
       - "5000:8080"
       - "5001:8081"
@@ -22,6 +26,8 @@ services:
     depends_on:
       - distributedcache
       - messagebus
+      - qdrant
+      - ollama
 
   deamonnotification:
     environment:
@@ -33,8 +39,8 @@ services:
       - MessageBroker__UserName=guest
       - MessageBroker__Password=guest
     ports:
-      - "5000:8080"
-      - "5001:8081"
+      - "5002:8080"
+      - "5003:8081"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
@@ -92,7 +98,26 @@ services:
       - "5672:5672"
       - "15672:15672"
 
+  qdrant:
+    container_name: qdrant
+    ports:
+      - "6333:6333"   # REST
+      - "6334:6334"   # gRPC
+    volumes:
+      - qdrant_data:/qdrant/storage
+    restart: unless-stopped
+
+  ollama:
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+
 volumes:
   redis_data:
   elasticsearch-data:
   portainer_data:  
+  qdrant_data:
+  ollama-data:

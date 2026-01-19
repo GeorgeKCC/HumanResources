@@ -1,6 +1,13 @@
-﻿using Shared.RabbitMQ.Contract;
-using Shared.RabbitMQ.Impl;
-using Shared.RabbitMQ.Models;
+﻿using Qdrant.Client;
+using Shared.Ollama.Contracts;
+using Shared.Ollama.Impl;
+using Shared.Ollama.Model;
+using Shared.Qdrant.Model;
+using Shared.Qdrant.Repository.Contracts;
+using Shared.Qdrant.Repository.Impl;
+using Shared.Securities.RabbitMQ.Contract;
+using Shared.Securities.RabbitMQ.Impl;
+using Shared.Securities.RabbitMQ.Models;
 
 namespace Shared
 {
@@ -25,7 +32,39 @@ namespace Shared
             ConfigServices(service);
             ConfigSignalR(service);
             ConfigDataProtection(service);
+            ConfigurationQdrant(service, configuration);
+            ConfigurationOllama(service, configuration);
+
             return service;
+        }
+
+        private static void ConfigurationOllama(IServiceCollection service, IConfiguration configuration)
+        {
+            var ollama = configuration.GetSection("Ollama").Get<OllamaConfiguration>();
+            //service.AddHttpClient("Ollama", client =>
+            //{
+            //    client.BaseAddress = new Uri(ollama.OllamaBaseUrl);
+            //});
+
+            service.AddHttpClient<IOllamaService, OllamaService>(client =>
+            {
+                client.BaseAddress = new Uri(ollama.OllamaBaseUrl);
+            });
+        }
+
+        private static void ConfigurationQdrant(IServiceCollection service, IConfiguration configuration)
+        {
+            var qdrant = configuration.GetSection("Qdrant").Get<QdrantConfiguration>();
+
+            service.AddSingleton<QdrantClient>(sp =>
+            {
+                return new QdrantClient(
+                    host: qdrant.Host,
+                    port: qdrant.GrpcPort,
+                    grpcTimeout: TimeSpan.FromSeconds(qdrant.TimeoutSeconds));
+            });
+
+            service.AddScoped<IQdrantRepository, ColaboratorQdrantRepository>();
         }
 
         public static IServiceCollection ServiceRabbitMQ(this IServiceCollection service, IConfiguration configuration)

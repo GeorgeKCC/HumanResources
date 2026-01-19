@@ -1,5 +1,6 @@
 ﻿using ColaboratorContract.Contracts;
 using ColaboratorContract.Dtos.Request;
+using ColaboratorModule.Features.AskWithRagColaboratorFeature;
 using ColaboratorModule.Features.ColaboratorRedisFeature;
 using ColaboratorModule.Features.CreateColaboratorFeature;
 using ColaboratorModule.Features.GetAllColaboratorFeature;
@@ -23,6 +24,7 @@ namespace ColaboratorModule
             services.AddScoped<IGetByEmailColaborator, GetByEmailColaborator>();
             services.AddScoped<IColaboratorNotificationHub, ColaboratorNotificationHub>();
             services.AddScoped<IColaboratorRedis, ColaboratorRedis>();
+            services.AddScoped<IAskWithRagColaborator, AskWithRagColaborator>();
 
             services.AddScoped<IValidator<UpdateColaboratorRequest>, UpdateColaboratorValidator>();
             return services;

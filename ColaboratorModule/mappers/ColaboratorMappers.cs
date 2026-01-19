@@ -41,5 +41,18 @@ namespace ColaboratorModule.mappers
                                                               x.DocumentNumber, x.DocumentType,
                                                               x.Security?.Active ?? false));
         }
+
+        internal static Colaborator Map(this ColaboratorDto colaboratorDto)
+        {
+            return new Colaborator()
+            {
+                DocumentNumber = colaboratorDto.DocumentNumber,
+                Email = colaboratorDto.Email,
+                Id = colaboratorDto.Id,
+                Name = colaboratorDto.Name,
+                LastName = colaboratorDto.LastName,
+                DocumentType = colaboratorDto.DocumentType
+            };
+        }
     }
 }

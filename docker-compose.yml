@@ -25,3 +25,9 @@ services:
 
   messagebus:
     image: rabbitmq:management
+
+  qdrant:
+    image: qdrant/qdrant:latest
+
+  ollama:
+    image: ollama/ollama:latest
