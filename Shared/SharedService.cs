@@ -40,11 +40,7 @@ namespace Shared
 
         private static void ConfigurationOllama(IServiceCollection service, IConfiguration configuration)
         {
-            var ollama = configuration.GetSection("Ollama").Get<OllamaConfiguration>();
-            //service.AddHttpClient("Ollama", client =>
-            //{
-            //    client.BaseAddress = new Uri(ollama.OllamaBaseUrl);
-            //});
+            var ollama = configuration.GetSection("Ollama").Get<OllamaConfiguration>() ?? throw new Ex("Not implemented configuration Ollama");
 
             service.AddHttpClient<IOllamaService, OllamaService>(client =>
             {
@@ -54,7 +50,7 @@ namespace Shared
 
         private static void ConfigurationQdrant(IServiceCollection service, IConfiguration configuration)
         {
-            var qdrant = configuration.GetSection("Qdrant").Get<QdrantConfiguration>();
+            var qdrant = configuration.GetSection("Qdrant").Get<QdrantConfiguration>() ?? throw new Ex("Not implemented configuration Qdrant");
 
             service.AddSingleton<QdrantClient>(sp =>
             {
@@ -67,7 +63,7 @@ namespace Shared
             service.AddScoped<IQdrantRepository, ColaboratorQdrantRepository>();
         }
 
-        public static IServiceCollection ServiceRabbitMQ(this IServiceCollection service, IConfiguration configuration)
+        public static IServiceCollection ConfigurationPublisherRabbitMQ(this IServiceCollection service, IConfiguration configuration)
         {
             var rabbitMQ = configuration.GetSection("MessageBroker").Get<RabbitMQConexion>() ?? throw new Ex("Not implemented configuration rabbitmq");
             service.AddSingleton(new RabbitMQPersistentConnection(
@@ -83,7 +79,7 @@ namespace Shared
             return service;
         }
 
-        public static IServiceCollection ServiceConsumerRabbitMQ(this IServiceCollection service, IConfiguration configuration)
+        public static IServiceCollection ConfigurationConsumerRabbitMQ(this IServiceCollection service, IConfiguration configuration)
         {
             var rabbitMQ = configuration.GetSection("MessageBroker").Get<RabbitMQConexion>() ?? throw new Ex("Not implemented configuration rabbitmq");
             service.AddSingleton(new RabbitMQPersistentConnection(

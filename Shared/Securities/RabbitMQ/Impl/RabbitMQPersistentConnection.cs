@@ -1,6 +1,5 @@
 ﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Shared.Securities.RabbitMQ.Impl
 {
@@ -28,14 +27,9 @@ namespace Shared.Securities.RabbitMQ.Impl
                 if (_connection is { IsOpen: true })
                     return _connection;
 
-                _connection = await _factory.CreateConnectionAsync();
-
-                return _connection;
-            }
-            catch
-            {
                 var retries = 3;
-                while (retries -- > 0)
+
+                while (retries-- > 0)
                 {
                     try
                     {
@@ -44,16 +38,20 @@ namespace Shared.Securities.RabbitMQ.Impl
                     }
                     catch (BrokerUnreachableException)
                     {
-                        Console.WriteLine("⏳ RabbitMQ no disponible, reintentando...");
+                        Console.WriteLine("RabbitMQ no disponible, reintentando...");
                     }
                 }
 
                 if (_connection == null)
                 {
-                    throw new Ex("❌ No se pudo conectar a RabbitMQ");
+                    throw new Ex("No se pudo conectar a RabbitMQ");
                 }
 
                 return _connection;
+            }
+            catch(Ex ex)
+            {
+                throw new Ex(ex.Message);
             }
         }
     }

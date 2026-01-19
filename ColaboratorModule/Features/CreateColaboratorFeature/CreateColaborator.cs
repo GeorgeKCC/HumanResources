@@ -10,7 +10,6 @@ using Shared.Ollama.Contracts;
 using Shared.Ollama.EmbeddingMapper;
 using Shared.Qdrant.Repository.Contracts;
 using Shared.Qdrant.Tables;
-using System.ComponentModel.DataAnnotations;
 
 namespace ColaboratorModule.Features.CreateColaboratorFeature
 {
