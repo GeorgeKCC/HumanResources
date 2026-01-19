@@ -18,7 +18,7 @@ namespace ManagementModule
             services.AddScoped<IGetByEmailSecurity, GetByEmailSecurity>();
             services.AddScoped<IStrategySecurity, DeactivatedSecurity>();
             services.AddScoped<ICreateActiveDeactive<GenericResponse<bool>>, CreateActiveDeactive>();
-            services.ServiceRabbitMQ(configuration);
+            services.ConfigurationPublisherRabbitMQ(configuration);
             return services;
         }
     }

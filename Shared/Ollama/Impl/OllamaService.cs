@@ -1,7 +1,4 @@
-﻿using Shared.Ollama.Contracts;
-using System.Net.Http.Json;
-
-namespace Shared.Ollama.Impl
+﻿namespace Shared.Ollama.Impl
 {
     internal class OllamaService(HttpClient http) : IOllamaService
     {
@@ -9,54 +6,77 @@ namespace Shared.Ollama.Impl
 
         public async Task<float[]> GenerateEmbeddingAsync(string text)
         {
-            var response = await _http.PostAsJsonAsync("/api/embeddings", new
+            try
             {
-                model = "nomic-embed-text",
-                prompt = text
-            });
+                var response = await _http.PostAsJsonAsync("/api/embeddings", new
+                {
+                    model = "nomic-embed-text",
+                    prompt = text
+                });
 
+                var statusResponse = response.EnsureSuccessStatusCode();
 
-            response.EnsureSuccessStatusCode();
+                if (statusResponse.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new Ex(response.RequestMessage?.ToString());
+                }
 
-            var result = await response.Content.ReadFromJsonAsync<OllamaEmbeddingResponse>();
-            return result!.Embedding;
+                var result = await response.Content.ReadFromJsonAsync<OllamaEmbeddingResponse>();
+                return result!.Embedding;
+            }
+            catch(Ex ex)
+            {
+                throw new Ex(ex.Message);
+            }
         }
 
         public async Task<string> GenerateResponseAsync(List<string> context, string question)
         {
-            var prompt = $"""
-                            Eres un asistente que responde únicamente usando el CONTEXTO proporcionado.
-
-                            REGLAS:
-                            - Usa SOLO la información del CONTEXTO.
-                            - NO infieras, NO asumas, NO completes información.
-                            - Si la respuesta NO está explícitamente en el CONTEXTO, responde exactamente:
-                              "No tengo esa información."
-                            - Si la respuesta está explícitamente en el CONTEXTO, response amablemente con:
-                              "Te comparto la siguiente información"
-
-                            CONTEXTO:
-                            {string.Join("\n", context)}
-
-                            PREGUNTA:
-                            {question}
-
-                            RESPUESTA:
-                          """;
-
-
-            var response = await _http.PostAsJsonAsync("api/generate", new
+            try
             {
-                model = "llama3",
-                prompt,
-                stream = false
-            });
+                //var prompt = $"""
+                //            Eres un asistente que responde únicamente usando el CONTEXTO proporcionado.
 
-            var result = await response.Content.ReadFromJsonAsync<OllamaGenerateResponse>();
-            return result!.Response;
+                //            REGLAS:
+                //            - Usa SOLO la información del CONTEXTO.
+                //            - NO infieras, NO asumas, NO completes información.
+                //            - Si la respuesta NO está explícitamente en el CONTEXTO, responde exactamente:
+                //              "No tengo esa información."
+                //            - Si la respuesta está explícitamente en el CONTEXTO, response amablemente con:
+                //              "Te comparto la siguiente información"
+
+                //            CONTEXTO:
+                //            {string.Join("\n", context)}
+
+                //            PREGUNTA:
+                //            {question}
+
+                //            RESPUESTA:
+                //          """;
+
+                var prompt = GenericPromptResponse.PROMPT_RESPONSE(context, question);
+
+                var response = await _http.PostAsJsonAsync("api/generate", new
+                {
+                    model = "llama3",
+                    prompt,
+                    stream = false
+                });
+
+                var statusResponse = response.EnsureSuccessStatusCode();
+
+                if (statusResponse.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new Ex(response.RequestMessage?.ToString());
+                }
+
+                var result = await response.Content.ReadFromJsonAsync<OllamaGenerateResponse>();
+                return result!.Response;
+            }
+            catch(Ex ex)
+            {
+                throw new Ex(ex.Message);
+            }
         }
-
-        private record OllamaEmbeddingResponse(float[] Embedding);
-        private record OllamaGenerateResponse(string Response);
     }
 }

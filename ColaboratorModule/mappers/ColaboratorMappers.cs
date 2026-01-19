@@ -21,7 +21,7 @@ namespace ColaboratorModule.mappers
         internal static ColaboratorDto Map(this Colaborator colaborator, int id)
         {
             return new ColaboratorDto(id, colaborator.Name,colaborator.LastName, colaborator.Email,
-                                      colaborator.DocumentNumber, colaborator.DocumentType, colaborator.Security?.Active ?? false);
+                                      colaborator.DocumentType, colaborator.DocumentNumber, colaborator.Security?.Active ?? false);
         }
 
         internal static Colaborator Map(this UpdateColaboratorRequest updateColaboratorRequest, Colaborator colaborator)

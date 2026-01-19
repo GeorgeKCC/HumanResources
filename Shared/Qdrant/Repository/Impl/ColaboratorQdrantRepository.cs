@@ -1,10 +1,4 @@
-﻿using Elastic.CommonSchema;
-using Qdrant.Client;
-using Qdrant.Client.Grpc;
-using Shared.Qdrant.Repository.Contracts;
-using Shared.Qdrant.Tables;
-
-namespace Shared.Qdrant.Repository.Impl
+﻿namespace Shared.Qdrant.Repository.Impl
 {
     internal class ColaboratorQdrantRepository : IQdrantRepository
     {
@@ -41,7 +35,9 @@ namespace Shared.Qdrant.Repository.Impl
                                                 ["content"] = content,
                                                 ["name"] = colaborator.Name,
                                                 ["lastName"] = colaborator.LastName,
-                                                ["email"] = colaborator.Email
+                                                ["email"] = colaborator.Email,
+                                                ["documentNumber"] = colaborator.DocumentNumber,
+                                                ["documentType"] = colaborator.DocumentType
                                              }
                                          }
                                      ]);

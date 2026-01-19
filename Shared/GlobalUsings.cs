@@ -45,4 +45,13 @@ global using System.Text.Json;
 global using RedLockNet.SERedis.Configuration;
 global using Shared.RedLock;
 global using StackExchange.Redis;
+global using Shared.Ollama.Contracts;
+global using Shared.Ollama.Model.Responses;
+global using Shared.Ollama.Prompt;
+global using System.Net.Http.Json;
+global using Qdrant.Client;
+global using Qdrant.Client.Grpc;
+global using Shared.Qdrant.Repository.Contracts;
+global using Shared.Qdrant.Tables;
+
 
