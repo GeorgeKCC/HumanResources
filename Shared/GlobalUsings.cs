@@ -53,5 +53,12 @@ global using Qdrant.Client;
 global using Qdrant.Client.Grpc;
 global using Shared.Qdrant.Repository.Contracts;
 global using Shared.Qdrant.Tables;
+global using Shared.Ollama.Impl;
+global using Shared.Ollama.Model;
+global using Shared.Qdrant.Model;
+global using Shared.Qdrant.Repository.Impl;
+global using Shared.RabbitMQ.Contract;
+global using Shared.RabbitMQ.Impl;
+global using Shared.RabbitMQ.Models;
 
 

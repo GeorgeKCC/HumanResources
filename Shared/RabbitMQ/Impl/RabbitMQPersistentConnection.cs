@@ -1,7 +1,7 @@
 ﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
 
-namespace Shared.Securities.RabbitMQ.Impl
+namespace Shared.RabbitMQ.Impl
 {
     public class RabbitMQPersistentConnection
     {
@@ -27,7 +27,7 @@ namespace Shared.Securities.RabbitMQ.Impl
                 if (_connection is { IsOpen: true })
                     return _connection;
 
-                var retries = 3;
+                var retries = 5;
 
                 while (retries-- > 0)
                 {
@@ -39,6 +39,7 @@ namespace Shared.Securities.RabbitMQ.Impl
                     catch (BrokerUnreachableException)
                     {
                         Console.WriteLine("RabbitMQ no disponible, reintentando...");
+                        Thread.Sleep(5000);
                     }
                 }
 
@@ -51,7 +52,8 @@ namespace Shared.Securities.RabbitMQ.Impl
             }
             catch(Ex ex)
             {
-                throw new Ex(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                throw new Ex(ex.ToString());
             }
         }
     }

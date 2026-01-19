@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Shared.Securities.RabbitMQ.Models
+namespace Shared.RabbitMQ.Models
 {
     internal class RabbitMQConexion
     {

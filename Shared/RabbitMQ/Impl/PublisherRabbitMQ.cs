@@ -1,6 +1,6 @@
 ﻿using RabbitMQ.Client;
 
-namespace Shared.Securities.RabbitMQ.Impl
+namespace Shared.RabbitMQ.Impl
 {
     internal class PublisherRabbitMQ(RabbitMQPersistentConnection connection)
     {

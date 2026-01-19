@@ -1,4 +1,4 @@
-﻿using Shared.Securities.RabbitMQ.Queued;
+﻿using Shared.RabbitMQ.Queued;
 
 namespace DeamonNotification.Features
 {

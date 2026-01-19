@@ -1,15 +1,4 @@
-﻿using Qdrant.Client;
-using Shared.Ollama.Contracts;
-using Shared.Ollama.Impl;
-using Shared.Ollama.Model;
-using Shared.Qdrant.Model;
-using Shared.Qdrant.Repository.Contracts;
-using Shared.Qdrant.Repository.Impl;
-using Shared.Securities.RabbitMQ.Contract;
-using Shared.Securities.RabbitMQ.Impl;
-using Shared.Securities.RabbitMQ.Models;
-
-namespace Shared
+﻿namespace Shared
 {
     public static class SharedService
     {
@@ -73,7 +62,7 @@ namespace Shared
             ));
 
             service.AddSingleton<PublisherRabbitMQ>();
-            service.AddScoped<IPublishRabbitMQ, PublishRabbitMQ>();
+            service.AddScoped<IPublishRabbitMQ, RabbitMqPublisher>();
             service.AddScoped<IConsumerRabbitMQ, RabbitMqConsumer>();
 
             return service;

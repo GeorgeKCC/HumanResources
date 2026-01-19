@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using Shared.Context;
 using Shared.Entities;
 using Shared.Generics.Response;
+using Shared.RabbitMQ.Contract;
+using Shared.RabbitMQ.Queued;
 using Shared.Securities.Contracts;
-using Shared.Securities.RabbitMQ.Contract;
-using Shared.Securities.RabbitMQ.Queued;
 
 namespace ManagementModule.Features.CreateSecurityFeature
 {
