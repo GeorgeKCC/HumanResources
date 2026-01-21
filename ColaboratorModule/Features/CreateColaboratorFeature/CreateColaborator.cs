@@ -20,7 +20,7 @@ namespace ColaboratorModule.Features.CreateColaboratorFeature
                                      IOllamaService ollamaService) : ICreateColaborator
     {
 
-        IQdrantRepository _qdrantRepository = qdrantRepositories.FirstOrDefault(x => x.Table == QdrantTable.COLABORATOR_TABLE) ?? throw new Exception();
+        private readonly IQdrantRepository _qdrantRepository = qdrantRepositories.FirstOrDefault(x => x.Table == QdrantTable.COLABORATOR_TABLE) ?? throw new Exception();
 
         public async Task<GenericResponse<ColaboratorDto>> CreateAsync(CreateColaboratorRequest createColaboratorRequest)
         {

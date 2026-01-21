@@ -138,6 +138,7 @@
             service.AddScoped<IGenerateToken, GenerateToken>();
             service.AddScoped<IPasswordHashWithSalt, PasswordHashWithSalt>();
             service.AddScoped<ITokensInsideCookie, TokensInsideCookie>();
+            service.AddScoped<IGetAndStoreTokensAntiforgery, GetAndStoreTokensAntiforgery>();
         }
 
         private static void ConfigDatabase(IServiceCollection service, IConfiguration configuration)

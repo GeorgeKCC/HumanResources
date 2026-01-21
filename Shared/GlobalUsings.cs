@@ -60,5 +60,6 @@ global using Shared.Qdrant.Repository.Impl;
 global using Shared.RabbitMQ.Contract;
 global using Shared.RabbitMQ.Impl;
 global using Shared.RabbitMQ.Models;
+global using Microsoft.AspNetCore.Antiforgery;
 
 
