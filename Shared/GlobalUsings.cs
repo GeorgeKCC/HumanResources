@@ -1,6 +1,5 @@
 ﻿global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Builder;
-global using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Caching.Hybrid;
@@ -61,5 +60,14 @@ global using Shared.RabbitMQ.Contract;
 global using Shared.RabbitMQ.Impl;
 global using Shared.RabbitMQ.Models;
 global using Microsoft.AspNetCore.Antiforgery;
+global using Shared.Cache;
+global using Shared.Cors;
+global using Shared.DataProtection;
+global using Shared.HttpContextAccessor;
+global using Shared.hub;
+global using Shared.Ollama;
+global using Shared.Qdrant;
+global using Shared.RateLimit;
+global using Shared.Securities;
 
 
