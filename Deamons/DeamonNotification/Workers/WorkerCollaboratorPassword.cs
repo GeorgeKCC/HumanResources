@@ -1,4 +1,4 @@
-﻿using DeamonNotification.Features;
+﻿using DeamonNotification.Features.NotificationCollaborator;
 using Shared.RabbitMQ.Contract;
 using Shared.RabbitMQ.Queued;
 using System.Text.Json;
