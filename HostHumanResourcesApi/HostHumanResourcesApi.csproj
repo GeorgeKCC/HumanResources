@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ColaboratorModule\ColaboratorModule.csproj" />
+    <ProjectReference Include="..\LoginModule\LoginModule.csproj" />
+    <ProjectReference Include="..\ManagementModule\ManagementModule.csproj" />
     <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 

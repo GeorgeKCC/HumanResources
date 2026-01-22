@@ -1,4 +1,4 @@
-﻿namespace Shared.Securities.RabbitMQ.Queued
+﻿namespace Shared.RabbitMQ.Queued
 {
     public record QueueCollaboratorPassword(string Password, string Email, string FullName);
 }

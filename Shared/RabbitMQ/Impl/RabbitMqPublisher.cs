@@ -1,8 +1,6 @@
-﻿using Shared.Securities.RabbitMQ.Contract;
-
-namespace Shared.Securities.RabbitMQ.Impl
+﻿namespace Shared.RabbitMQ.Impl
 {
-    internal class PublishRabbitMQ(DatabaseContext databaseContext, PublisherRabbitMQ publisherRabbitMQ) : IPublishRabbitMQ
+    internal class RabbitMqPublisher(DatabaseContext databaseContext, PublisherRabbitMQ publisherRabbitMQ) : IPublishRabbitMQ
     {
         public async Task PublishAsync<T>(T message)
         {

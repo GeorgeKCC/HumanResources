@@ -1,8 +1,7 @@
 ﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Shared.Securities.RabbitMQ.Contract;
 
-namespace Shared.Securities.RabbitMQ.Impl
+namespace Shared.RabbitMQ.Impl
 {
     internal class RabbitMqConsumer(RabbitMQPersistentConnection connection) : IConsumerRabbitMQ
     {

@@ -1,4 +1,4 @@
-﻿namespace Shared.Securities.RabbitMQ.Queued
+﻿namespace Shared.RabbitMQ.Queued
 {
     public record QueueCollaboratorMessage(int CollaboratorId,string Subject, string Message);
 }

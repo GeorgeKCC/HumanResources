@@ -1,11 +1,12 @@
 using DeamonNotification.Features;
 using DeamonNotification.Workers;
-using Shared;
+using Shared.Context;
+using Shared.RabbitMQ;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Services.ServiceConnectionDatabase(builder.Configuration);
-builder.Services.ConfigurationConsumerRabbitMQ(builder.Configuration);
+builder.Services.AddServiceDatabaseContext(builder.Configuration);
+builder.Services.AddServiceRabbitMQ(builder.Configuration);
 
 builder.Services.AddScoped<INotificationCollaboratorPassword, NotificationCollaboratorPassword>();
 

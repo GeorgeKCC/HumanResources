@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LoginContract\LoginContract.csproj" />
+    <ProjectReference Include="..\ManagementContract\ManagementContract.csproj" />
   </ItemGroup>
 
 </Project>

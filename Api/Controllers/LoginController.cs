@@ -52,7 +52,7 @@ namespace HumanResourcesApi.Controllers
         [Authorize]
         public IActionResult CrsfToken()
         {
-            var response = csrf.GetToken(HttpContext);
+            var response = csrf.GetToken();
             return Ok(response);
         }
     }
