@@ -1,7 +1,5 @@
-﻿using OpenTelemetry.Exporter;
+﻿using OpenTelemetry;
 using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
-using System.Diagnostics;
 
 namespace Shared.Logger
 {
@@ -9,13 +7,12 @@ namespace Shared.Logger
     {
         public static IServiceCollection AddServiceLogginDelegate(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<LoggingDelegatingHandler>();
-
             var seqUri = configuration.GetValue<string>("Seq:Uri")!;
 
-            services.AddOpenTelemetry()
+            services.AddOpenTelemetry()               
                       .WithTracing(tracing =>
                       {
+                          tracing.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("humanresourcesapi"));
                           tracing.AddSource("humanresourcesapi");
                           tracing.AddAspNetCoreInstrumentation(options =>
                           {
@@ -47,7 +44,7 @@ namespace Shared.Logger
 
             app.UseSerilogRequestLogging(options =>
             {
-                options.EnrichDiagnosticContext = (ctx, http) =>
+                options.EnrichDiagnosticContext = async (ctx, http) =>
                 {
                     ctx.Set("TraceId", Activity.Current?.TraceId.ToString());
                     ctx.Set("SpanId", Activity.Current?.SpanId.ToString());

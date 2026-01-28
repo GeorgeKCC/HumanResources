@@ -25,7 +25,6 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.Logging;
 global using Shared.Generics.Response;
 global using Ex = System.Exception;
-global using System.Net.Sockets;
 global using System.Net;
 global using Microsoft.Extensions.Hosting;
 global using ValidationException = FluentValidation.ValidationException;
@@ -54,5 +53,9 @@ global using Shared.RabbitMQ.Contract;
 global using Shared.RabbitMQ.Impl;
 global using Shared.RabbitMQ.Models;
 global using Microsoft.AspNetCore.Antiforgery;
+global using System.Diagnostics;
+global using OpenTelemetry.Exporter;
+global using OpenTelemetry.Trace;
+
 
 
