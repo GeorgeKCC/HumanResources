@@ -5,24 +5,17 @@
         public static Action<HostBuilderContext, LoggerConfiguration> Configure =>
            (context, configuration) =>
            {
-               var elasticUri = context.Configuration.GetValue<string>("ElasticConfiguration:Uri")!;
-               var indexFormat = $"applogs-{context.HostingEnvironment.ApplicationName?.ToLower().Replace(".", "-")}-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM}";
+               var seqUri = context.Configuration.GetValue<string>("Seq:Uri")!;
 
                configuration
-                    .Enrich.FromLogContext()
-                    .Enrich.WithMachineName()
-                    .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
-                    .Enrich.WithProperty("Application", context.HostingEnvironment.ApplicationName)
-                    .WriteTo.Debug()
-                    .WriteTo.Console()
-                    .WriteTo.Elasticsearch([new Uri(elasticUri)], opts =>
-                    {
-                        opts.DataStream = new DataStreamName(indexFormat);
-                    }, transport =>
-                    {
-                        transport.Authentication(new BasicAuthentication("kibana_system", "george25"));
-                    })
-                    .ReadFrom.Configuration(context.Configuration);
+                   .ReadFrom.Configuration(context.Configuration)
+                   .Enrich.FromLogContext()
+                   .Enrich.WithCorrelationId()
+                   .Enrich.WithProperty("Service", "humanresourcesapi")
+                   .Enrich.WithActivityId()
+                   .Enrich.WithTraceIdentifier()
+                   .WriteTo.Console()
+                   .WriteTo.Seq(seqUri);
            };
     }
 }

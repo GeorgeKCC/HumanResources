@@ -1,6 +1,4 @@
-﻿using Elastic.CommonSchema;
-
-namespace Shared.Securities
+﻿namespace Shared.Securities
 {
     public static class UseServiceAuthentication
     {

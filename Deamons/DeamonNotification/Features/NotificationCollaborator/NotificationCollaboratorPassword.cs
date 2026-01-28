@@ -1,6 +1,6 @@
 ﻿using Shared.RabbitMQ.Queued;
 
-namespace DeamonNotification.Features
+namespace DeamonNotification.Features.NotificationCollaborator
 {
     public class NotificationCollaboratorPassword(ILogger<NotificationCollaboratorPassword> logger) : INotificationCollaboratorPassword
     {
