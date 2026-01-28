@@ -5,6 +5,7 @@
         public static IServiceCollection RegisterServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.MapperBinding(configuration);
+            services.AddServiceLogginDelegate(configuration);
             services.AddServiceExceptionHandler();
             services.AddServiceHttpContextAccesor();
             services.AddServiceDatabaseContext(configuration);
@@ -14,7 +15,6 @@
             services.AddServiceAntiforgeryValidate();
             services.AddServiceAuthentication(configuration);
             services.AddServiceRateLimit();
-            services.AddServiceLogginDelegate();
             services.AddServiceSignalR();
             services.AddServiceDataProtection();
             services.AddServiceQdrant(configuration);
@@ -32,6 +32,7 @@
         public static WebApplication RegisterApp(this WebApplication app)
         {
             app.UseAppCors();
+            app.UseAppSeg();
             app.UseAppAntiforgery();
             app.UseAppMiddlewareCorrelationId();
             app.UseAppRedLockMiddleware();

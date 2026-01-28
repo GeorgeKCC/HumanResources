@@ -14,11 +14,8 @@ services:
   distributedcache:
     image: redis
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:9.1.4 
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:9.1.4
+  seq:
+    image: datalust/seq:latest
 
   portainer:
     image: portainer/portainer-ce

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Shared.Generics.Response;
 using Shared.Securities.Contracts;
+using System.Diagnostics;
 
 namespace LoginModule.Features.LoginFeature
 {

@@ -1,10 +1,4 @@
-﻿using Elastic.CommonSchema;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Shared.Qdrant
+﻿namespace Shared.Qdrant
 {
     public static class UseServiceQdrantVector
     {
