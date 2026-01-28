@@ -10,13 +10,12 @@ using System.Diagnostics;
 
 namespace LoginModule.Features.LoginFeature
 {
-    internal class Login(
-                             ILogger<Login> logger,
-                             IGetByEmailSecurity getByEmailSecurity,
-                             IPasswordHashWithSalt passwordHashWithSalt,
-                             IGenerateToken generateToken,
-                             ITokensInsideCookie tokensInsideCookie
-                            ) : ILogin
+    internal class Login(ILogger<Login> logger,
+                         IGetByEmailSecurity getByEmailSecurity,
+                         IPasswordHashWithSalt passwordHashWithSalt,
+                         IGenerateToken generateToken,
+                         ITokensInsideCookie tokensInsideCookie
+                        ) : ILogin
     {
         public async Task<GenericResponse<LoginDto>> LoginAsync(LoginRequest loginRequest, HttpContext httpContext)
         {
