@@ -15,7 +15,7 @@
                    .Enrich.WithActivityId()
                    .Enrich.WithTraceIdentifier()
                    .WriteTo.Console()
-                   .WriteTo.Seq(seqUri);
+                   .WriteTo.Seq(seqUri, bufferBaseFilename: "/tmp/seq-buffer");
            };
     }
 }
