@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -7,6 +7,13 @@
     <UserSecretsId>030aed78-c5f4-42b7-a9ba-1dc227c80e07</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <Configurations>Debug;Release;Dev</Configurations>
+	<!-- Container -->
+	<ContainerRegistry>ghcr.io</ContainerRegistry>
+	<ContainerRepository>georgekcc/humanresources/humanresourcesapi</ContainerRepository>
+	<ContainerPort>8080</ContainerPort>
+	<ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:10.0</ContainerBaseImage>
+	<ContainerImageTags>dev;latest</ContainerImageTags>
   </PropertyGroup>
 
   <ItemGroup>

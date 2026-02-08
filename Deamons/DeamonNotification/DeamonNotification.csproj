@@ -7,6 +7,7 @@
     <UserSecretsId>dotnet-DeamonNotification-afec5116-4736-41cf-823c-bb6690279e51</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
+    <Configurations>Debug;Release;Dev</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

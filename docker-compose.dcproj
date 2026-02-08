@@ -6,14 +6,24 @@
     <DockerPublishLocally>False</DockerPublishLocally>
     <ProjectGuid>81dded9d-158b-e303-5f62-77a2896d2a5a</ProjectGuid>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AdditionalComposeFilePaths>docker-compose.yml;docker-compose.override.yml</AdditionalComposeFilePaths>
+	<DefineConstants>Debug</DefineConstants>
+	<DockerTargetOS>Linux</DockerTargetOS>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|AnyCPU'">
+    <AdditionalComposeFilePaths>docker-compose.yml;docker-compose.dev.override.yml</AdditionalComposeFilePaths>
+	<DefineConstants>DEV</DefineConstants>
+	<DockerTargetOS>Linux</DockerTargetOS>
+  </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
+    <None Include="docker-compose.dev.override.yml">
+      <DependentUpon>docker-compose.yml</DependentUpon>
+    </None>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
-    <None Include="k8s\deployment.yaml" />
-    <None Include="k8s\README.md" />
-    <None Include="k8s\service.yaml" />
   </ItemGroup>
 </Project>

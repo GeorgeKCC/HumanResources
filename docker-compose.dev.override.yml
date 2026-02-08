@@ -1,9 +1,6 @@
 services:
   humanresourcesapi:
-    image: ${DOCKER_REGISTRY-}humanresourcesapi
-    build:
-      context: .
-      dockerfile: Api/Dockerfile
+    image: ghcr.io/georgekcc/humanresources/humanresourcesapi:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
