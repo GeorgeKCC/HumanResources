@@ -1,6 +1,8 @@
-﻿namespace Shared.RabbitMQ.Impl
+﻿using Shared.Context.HumanResource_Context;
+
+namespace Shared.RabbitMQ.Impl
 {
-    internal class RabbitMqPublisher(DatabaseContext databaseContext, PublisherRabbitMQ publisherRabbitMQ) : IPublishRabbitMQ
+    internal class RabbitMqPublisher(DatabaseHumanResourceContext databaseContext, PublisherRabbitMQ publisherRabbitMQ) : IPublishRabbitMQ
     {
         public async Task PublishAsync<T>(T message)
         {

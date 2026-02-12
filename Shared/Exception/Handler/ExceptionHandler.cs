@@ -67,6 +67,8 @@
 
             var response = new GenericResponseFailed<ProblemDetails>(ErrorCode, Detail, problemDetails);
 
+            logger.LogError("Error Message: {message}", JsonSerializer.Serialize(response));
+
             await httpContext.Response.WriteAsJsonAsync(response, cancellationToken: cancellationToken);
             return true;
         }

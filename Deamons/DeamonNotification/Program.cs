@@ -2,14 +2,14 @@ using DeamonNotification.Features.BillingGenerate;
 using DeamonNotification.Features.NotificationCollaborator;
 using DeamonNotification.Features.ProcessGenerate;
 using DeamonNotification.Workers;
-using Shared.Context;
+using Shared.Context.HumanResource_Context;
 using Shared.Quartz;
 using Shared.Quartz.Contract;
 using Shared.RabbitMQ;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Services.AddServiceDatabaseContext(builder.Configuration);
+builder.Services.AddServiceDatabaseHumanResourceContext(builder.Configuration);
 builder.Services.AddServiceRabbitMQ(builder.Configuration);
 
 builder.Services.AddScoped<INotificationCollaboratorPassword, NotificationCollaboratorPassword>();

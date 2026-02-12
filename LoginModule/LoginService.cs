@@ -1,4 +1,6 @@
-﻿using LoginContract.Contract;
+﻿using FluentValidation;
+using LoginContract.Contract;
+using LoginContract.Dtos.Requests;
 using LoginModule.Features.CSRFFeature;
 using LoginModule.Features.LoginFeature;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +13,8 @@ namespace LoginModule
         {
             services.AddScoped<ILogin, Login>();
             services.AddScoped<ICSRF, CSRF>();
+
+            services.AddScoped<IValidator<LoginRequest>, LoginValidator>();
             return services;
         }
     }

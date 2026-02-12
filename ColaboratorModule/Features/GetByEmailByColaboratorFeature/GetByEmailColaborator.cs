@@ -2,13 +2,13 @@
 using ColaboratorContract.Dtos.Response;
 using ColaboratorModule.mappers;
 using Microsoft.EntityFrameworkCore;
-using Shared.Context;
+using Shared.Context.HumanResource_Context;
 using Shared.Exception;
 using Shared.Generics.Response;
 
 namespace ColaboratorModule.Features.GetByEmailByColaboratorFeature
 {
-    internal class GetByEmailColaborator(DatabaseContext databaseContext) : IGetByEmailColaborator
+    internal class GetByEmailColaborator(DatabaseHumanResourceContext databaseContext) : IGetByEmailColaborator
     {
         public async Task<GenericResponse<ColaboratorDto>> GetByEmailAsync(string email)
         {

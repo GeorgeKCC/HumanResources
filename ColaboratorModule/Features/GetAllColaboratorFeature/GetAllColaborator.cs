@@ -4,12 +4,12 @@ using ColaboratorModule.enums;
 using ColaboratorModule.mappers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
-using Shared.Context;
+using Shared.Context.HumanResource_Context;
 using Shared.Generics.Response;
 
 namespace ColaboratorModule.Features.GetAllColaboratorFeature
 {
-    internal class GetAllColaborator(DatabaseContext colaboratorContext, HybridCache hybridCache) : IGetAllColaborator
+    internal class GetAllColaborator(DatabaseHumanResourceContext colaboratorContext, HybridCache hybridCache) : IGetAllColaborator
     {
         public async Task<GenericResponse<IEnumerable<ColaboratorDto>>> GetAllAsync()
         {
