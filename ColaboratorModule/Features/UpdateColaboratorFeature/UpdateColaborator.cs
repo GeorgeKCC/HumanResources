@@ -5,15 +5,15 @@ using ColaboratorContract.Constants;
 using ColaboratorModule.mappers;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Shared.Context;
 using Shared.Entities;
 using Shared.Exception;
 using Shared.Generics.Response;
+using Shared.Context.HumanResource_Context;
 
 namespace ColaboratorModule.Features.UpdateColaboratorFeature
 {
     internal class UpdateColaborator(
-                                     DatabaseContext colaboratorContext,
+                                     DatabaseHumanResourceContext colaboratorContext,
                                      IValidator<UpdateColaboratorRequest> validator,
                                      IColaboratorNotificationHub colaboratorNotificationHub,
                                      IColaboratorRedis colaboratorRedis

@@ -1,12 +1,12 @@
 ﻿using ManagementContract.Contracts;
 using Microsoft.EntityFrameworkCore;
-using Shared.Context;
+using Shared.Context.HumanResource_Context;
 using Shared.Entities;
 using Shared.Exception;
 
 namespace ManagementModule.Features.GetByEmailSecurityFeature
 {
-    internal class GetByEmailSecurity(DatabaseContext databaseContext) : IGetByEmailSecurity
+    internal class GetByEmailSecurity(DatabaseHumanResourceContext databaseContext) : IGetByEmailSecurity
     {
         public async Task<Security> GetByEmailAsync(string email)
         {

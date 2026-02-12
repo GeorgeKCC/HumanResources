@@ -3,7 +3,7 @@ using ColaboratorContract.Dtos.Request;
 using ColaboratorContract.Dtos.Response;
 using ColaboratorModule.mappers;
 using Microsoft.EntityFrameworkCore;
-using Shared.Context;
+using Shared.Context.HumanResource_Context;
 using Shared.Exception;
 using Shared.Generics.Response;
 using Shared.Ollama.Contracts;
@@ -13,7 +13,7 @@ using Shared.Qdrant.Tables;
 
 namespace ColaboratorModule.Features.CreateColaboratorFeature
 {
-    internal class CreateColaborator(DatabaseContext colaboratorContext,
+    internal class CreateColaborator(DatabaseHumanResourceContext colaboratorContext,
                                      IColaboratorRedis colaboratorRedis,
                                      IColaboratorNotificationHub colaboratorNotificationHub,
                                      IEnumerable<IQdrantRepository> qdrantRepositories,

@@ -22,3 +22,6 @@ services:
 
   ollama:
     image: ollama/ollama:latest
+
+  ollama-init:
+    image: alpine:latest

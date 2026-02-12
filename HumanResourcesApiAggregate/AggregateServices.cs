@@ -1,4 +1,6 @@
-﻿namespace HumanResourcesApiAggregate
+﻿using Shared.Context.HumanResource_Context;
+
+namespace HumanResourcesApiAggregate
 {
     public static class AggregateServices
     {
@@ -8,7 +10,7 @@
             services.AddServiceLogginDelegate(configuration);
             services.AddServiceExceptionHandler();
             services.AddServiceHttpContextAccesor();
-            services.AddServiceDatabaseContext(configuration);
+            services.AddServiceDatabaseHumanResourceContext(configuration);
             services.AddServiceHybridCache(configuration);
             services.AddServiceRedLock();
             services.AddServiceCors(configuration);
@@ -40,6 +42,7 @@
             app.UseAppUseAuthenticationAndAuthorization();
             app.UseAppMapSignalR("/hubs/notifications");
             app.UseAppRateLimit();
+            app.UseAppSeedDatabaseHumanResource();
 
             app.UseHealthChecks("/health", new HealthCheckOptions()
             {

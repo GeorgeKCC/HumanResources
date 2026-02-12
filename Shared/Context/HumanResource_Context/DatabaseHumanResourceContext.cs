@@ -1,6 +1,6 @@
-﻿namespace Shared.Context
+﻿namespace Shared.Context.HumanResource_Context
 {
-    public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbContext(options)
+    public class DatabaseHumanResourceContext(DbContextOptions<DatabaseHumanResourceContext> options) : DbContext(options)
     {
         public DbSet<Colaborator> Colaborators { get; set; }
         public DbSet<Security> Securities { get; set; }

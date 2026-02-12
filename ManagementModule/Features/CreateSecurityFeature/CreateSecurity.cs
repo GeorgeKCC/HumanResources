@@ -4,7 +4,7 @@ using ManagementContract.Contracts;
 using ManagementContract.Dtos.Request;
 using ManagementContract.Enums;
 using Microsoft.EntityFrameworkCore;
-using Shared.Context;
+using Shared.Context.HumanResource_Context;
 using Shared.Entities;
 using Shared.Generics.Response;
 using Shared.RabbitMQ.Contract;
@@ -14,7 +14,7 @@ using Shared.Securities.Contracts;
 namespace ManagementModule.Features.CreateSecurityFeature
 {
     internal class CreateSecurity(
-                                  DatabaseContext managementContext,
+                                  DatabaseHumanResourceContext managementContext,
                                   IGetByIdColaborator getByIdColaborator,
                                   IPasswordHashWithSalt passwordHashWithSalt,
                                   IColaboratorNotificationHub colaboratorNotificationHub,

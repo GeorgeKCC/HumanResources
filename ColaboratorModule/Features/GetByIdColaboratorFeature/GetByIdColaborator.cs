@@ -3,13 +3,13 @@ using ColaboratorContract.Dtos.Response;
 using ColaboratorModule.mappers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
-using Shared.Context;
+using Shared.Context.HumanResource_Context;
 using Shared.Exception;
 using Shared.Generics.Response;
 
 namespace ColaboratorModule.Features.GetByIdColaboratorFeature
 {
-    internal class GetByIdColaborator(DatabaseContext colaboratorContext, HybridCache hybridCache) : IGetByIdColaborator
+    internal class GetByIdColaborator(DatabaseHumanResourceContext colaboratorContext, HybridCache hybridCache) : IGetByIdColaborator
     {
         public async Task<GenericResponse<ColaboratorDto>> GetByIdAsync(int id)
         {

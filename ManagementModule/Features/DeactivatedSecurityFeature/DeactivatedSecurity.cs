@@ -3,13 +3,13 @@ using ColaboratorContract.Dtos.Response;
 using ManagementContract.Contracts;
 using ManagementContract.Dtos.Request;
 using ManagementContract.Enums;
-using Shared.Context;
+using Shared.Context.HumanResource_Context;
 using Shared.Entities;
 using Shared.Generics.Response;
 
 namespace ManagementModule.Features.DeactivatedSecurityFeature
 {
-    internal class DeactivatedSecurity(DatabaseContext managementContext,
+    internal class DeactivatedSecurity(DatabaseHumanResourceContext managementContext,
                                        IGetByIdColaborator getByIdColaborator,
                                        IGetByEmailSecurity getByEmailSecurity,
                                        IColaboratorNotificationHub colaboratorNotificationHub,
