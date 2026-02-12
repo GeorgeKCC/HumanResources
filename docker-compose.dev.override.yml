@@ -110,6 +110,19 @@ services:
       - ollama-data:/root/.ollama
     restart: unless-stopped
 
+  ollama-init:
+    depends_on:
+      - ollama
+    command: >
+      sh -c "apk add --no-cache wget &&
+             echo Waiting for Ollama... &&
+             until wget -qO- http://ollama:11434/api/tags >/dev/null; do sleep 2; done &&
+             echo Pull llama3 &&
+             wget --header='Content-Type: application/json' --post-data '{\"name\":\"llama3\"}' http://ollama:11434/api/pull &&
+             echo Pull nomic &&
+             wget --header='Content-Type: application/json' --post-data '{\"name\":\"nomic-embed-text\"}' http://ollama:11434/api/pull"
+    restart: "no"
+
 volumes:
   redis_data:
   seq-data:
